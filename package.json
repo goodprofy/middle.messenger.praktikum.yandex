@@ -7,7 +7,9 @@
     "dev": "vite",
     "preview": "vite preview",
     "server": "node server.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "stylelint": "stylelint \"**/*.scss\"",
+    "stylelint:fix": "stylelint \"**/*.scss\" --fix"
   },
   "dependencies": {
     "express": "4.19.2"
@@ -18,7 +20,10 @@
     "lint-staged": "15.2.7",
     "prettier": "3.3.2",
     "sass": "1.77.5",
-    "ts-node": "10.9.2",
+    "stylelint-config-standard-scss": "13.1.0",
+    "stylelint-no-unsupported-browser-features": "8.0.1",
+    "stylelint-order": "6.0.4",
+    "stylelint": "16.6.1",
     "typescript": "5.4.5",
     "vite-plugin-svgr": "4.2.0",
     "vite": "5.2.13"
@@ -26,6 +31,9 @@
   "lint-staged": {
     "*.{tsx,ts,jsx,js}": [
       "prettier --write"
+    ],
+    "*.{scss}": [
+      "stylelint --fix"
     ],
     "*.{md,html,css,scss,json,mjml}": [
       "prettier --write"

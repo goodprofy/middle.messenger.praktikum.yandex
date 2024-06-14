@@ -1,32 +1,47 @@
-type Props = Record<string, any> | null;
-type Tag =
-  | keyof HTMLElementTagNameMap
-  | ((props: PropsWithChildren) => JSX.Element);
-
-export function h(tag: Tag, props: Props, ...children: ElementNode[]) {
+export function h(
+  tag: keyof HTMLElementTagNameMap | FunctionComponent<any>,
+  props: { [key: string]: any },
+  ...children: any[]
+): HTMLElement {
   if (typeof tag === "function") {
-    return tag({ ...props, children });
-  }
-  const el = document.createElement(tag);
-  if (props) {
-    Object.entries(props).forEach(([key, val]) => {
-      if (key === "className") {
-        el.classList.add(...((val as string) || "").trim().split(" "));
-        return;
-      }
-
-      if (key.startsWith("on") && key.toLowerCase() in window) {
-        el.addEventListener(key.toLowerCase().substring(2), props[key]);
-        return;
-      }
-
-      el.setAttribute(key, val);
-    });
+    const result = tag({ ...props, children });
+    if (result === null) {
+      throw new Error("Function component returned null.");
+    }
+    return result as unknown as HTMLElement;
   }
 
-  children.forEach((child) => {
-    el.append(child);
+  const element = document.createElement(tag);
+
+  Object.entries(props || {}).forEach(([key, value]) => {
+    if (
+      key.startsWith("on") &&
+      typeof value === "function" &&
+      key.toLowerCase() in window
+    ) {
+      element.addEventListener(key.toLowerCase().substring(2), props[key]);
+    } else if (key === "className") {
+      element.classList.add(...((value as string) || "").trim().split(" "));
+    } else {
+      element.setAttribute(key, value);
+    }
   });
 
-  return el;
+  children.forEach((child) => {
+    if (typeof child === "string") {
+      element.innerText += child;
+    } else if (child instanceof Node) {
+      element.appendChild(child);
+    } else if (Array.isArray(child)) {
+      child.forEach((nestedChild) => {
+        if (typeof nestedChild === "string") {
+          element.innerText += nestedChild;
+        } else if (nestedChild instanceof Node) {
+          element.appendChild(nestedChild);
+        }
+      });
+    }
+  });
+
+  return element;
 }

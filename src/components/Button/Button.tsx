@@ -1,8 +1,7 @@
 type Props = {
-  title: string;
   onClick: () => void;
 };
 
-export const Button = ({ title, onClick }: Props) => {
-  return <button onClick={onClick}>{title}</button>;
+export const Button: FC<PropsWithChildren<Props>> = ({ onClick, children }) => {
+  return <button onClick={onClick}>{children}</button>;
 };

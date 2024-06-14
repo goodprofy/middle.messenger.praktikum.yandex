@@ -5,11 +5,12 @@ export const App = () => {
     <main className="hello">
       <h1>Hello JSX!</h1>
       <Button
-        title="Love button"
         onClick={() => {
           alert("Hi");
         }}
-      />
+      >
+        Love button
+      </Button>
     </main>
   );
 };

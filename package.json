@@ -3,10 +3,11 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
+    "dev": "vite",
     "preview": "vite preview",
-    "server": "node server.js"
+    "server": "node server.js",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "express": "4.19.2"

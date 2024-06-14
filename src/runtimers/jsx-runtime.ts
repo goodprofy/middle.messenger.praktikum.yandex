@@ -1,14 +1,12 @@
 type Props = Record<string, any> | null;
-type Children = (Node | string)[];
 type Tag =
   | keyof HTMLElementTagNameMap
-  | ((props: unknown, children: Children) => JSX.IntrinsicElements);
+  | ((props: PropsWithChildren) => JSX.Element);
 
-export function h(tag: Tag, props: Props, ...children: Children) {
+export function h(tag: Tag, props: Props, ...children: ElementNode[]) {
   if (typeof tag === "function") {
-    return tag({ ...props }, children);
+    return tag({ ...props, children });
   }
-
   const el = document.createElement(tag);
   if (props) {
     Object.entries(props).forEach(([key, val]) => {

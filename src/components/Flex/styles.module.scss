@@ -1,0 +1,19 @@
+.flex {
+  display: flex;
+}
+
+.isColumn {
+  flex-direction: column;
+}
+
+.gap_1 {
+  gap: 0.5rem;
+}
+
+.gap_2 {
+  gap: 1rem;
+}
+
+.gap_3 {
+  gap: 1.5rem;
+}

@@ -3,6 +3,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [svgr()],
+
   resolve: {
     alias: {
       '@runtimers': new URL('./src/runtimers', import.meta.url).pathname

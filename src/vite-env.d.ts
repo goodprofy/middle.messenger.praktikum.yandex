@@ -3,7 +3,7 @@
 
 declare namespace JSX {
   interface Element {
-    tag: keyof HTMLElementTagNameMap | FunctionComponent<any>;
+    tag: keyof HTMLElementTagNameMap | FC<any>;
     props: { [key: string]: any };
     children: any[];
   }
@@ -17,11 +17,19 @@ declare namespace JSX {
   };
 }
 
-declare type FC<P = {}> = FunctionComponent<P>;
+declare type FC<P = {}> = {
+  (props: P): JSX.Element | null;
+};
+
 declare type PropsWithChildren<P = unknown> = P & {
   children?: JSX.Element | JSX.Element[];
 };
 
-type FunctionComponent<P = {}> = {
-  (props: P): JSX.Element | null;
+declare type ChangeEvent<T> = {
+  target: {
+    value: T;
+  };
 };
+
+declare type ComponentProps<T extends keyof JSX.IntrinsicElements | FC<any>> =
+  T extends FC<infer P> ? P : T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T] : {};

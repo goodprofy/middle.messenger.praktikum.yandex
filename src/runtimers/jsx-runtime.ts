@@ -18,7 +18,7 @@ export function h(
   Object.entries(props || {}).forEach(([key, value]) => {
     if (key.startsWith('on') && typeof value === 'function' && key.toLowerCase() in window) {
       element.addEventListener(key.toLowerCase().substring(2), props[key]);
-    } else if (key === 'className') {
+    } else if (key === 'className' && isDefined(value)) {
       element.classList.add(...((value as string) || '').trim().split(' '));
     } else if (isDefined(value)) {
       element.setAttribute(key, value);

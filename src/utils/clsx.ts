@@ -1,18 +1,14 @@
 export function clsx(...classNames: (string | undefined | null | false | { [className: string]: boolean })[]) {
-  let result = '';
-  for (const className of classNames) {
-    if (className === undefined || className === null || className === false) {
-      continue;
+  const newClassNames = classNames.reduce<string[]>((acc, className) => {
+    if (!className) {
+      return acc;
     }
     if (typeof className === 'object') {
-      for (const key in className) {
-        if (className[key]) {
-          result += `${key} `;
-        }
-      }
-    } else {
-      result += `${className} `;
+      const classKeys = Object.keys(className).filter((key) => className[key]);
+      return [...acc, ...classKeys];
     }
-  }
-  return result.trim();
+    return [...acc, className];
+  }, []);
+
+  return newClassNames.length ? newClassNames.join(' ') : undefined;
 }

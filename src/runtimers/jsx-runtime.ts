@@ -4,11 +4,11 @@ export function h(
   tag: keyof HTMLElementTagNameMap | FC<any>,
   props: { [key: string]: any },
   ...children: any[]
-): HTMLElement {
+): HTMLElement | null {
   if (typeof tag === 'function') {
     const result = tag({ ...props, children });
     if (result === null) {
-      throw new Error('Function component returned null.');
+      return null;
     }
     return result as unknown as HTMLElement;
   }

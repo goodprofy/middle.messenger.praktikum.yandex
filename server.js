@@ -1,5 +1,5 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');
 
 try {
   run();
@@ -11,10 +11,10 @@ function run() {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  app.use(express.static(path.join(__dirname, "dist")));
+  app.use(express.static(path.join(__dirname, 'dist')));
 
-  app.get("/", (_, res) => {
-    res.sendFile("index.html");
+  app.get('*', (_, res) => {
+    res.sendFile('index.html', { root: path.join(__dirname, 'dist') });
   });
 
   app.listen(port, () => {

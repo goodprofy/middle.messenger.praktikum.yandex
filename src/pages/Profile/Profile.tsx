@@ -4,7 +4,7 @@ import { Avatar } from './Components';
 import { ProfileRow } from './Components/ProfileRow';
 import styles from './styles.module.scss';
 
-export const UserSettings = () => {
+export const Profile = () => {
   const profile = useUser();
   return (
     <div className={styles.user_settings}>

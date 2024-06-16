@@ -14,8 +14,6 @@ type Props = {
 };
 
 export const Contact: FC<Props> = ({ avatar, lastMessage, messageTime, unreadMessage, userName }) => {
-  console.log({ avatar, lastMessage, messageTime, unreadMessage, userName });
-
   return (
     <div className={styles.contact}>
       <Avatar src={avatar} userName={userName} />

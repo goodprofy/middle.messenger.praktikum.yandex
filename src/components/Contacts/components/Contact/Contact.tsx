@@ -23,7 +23,7 @@ export const Contact: FC<Props> = ({ avatar, lastMessage, messageTime, unreadMes
           <span className={styles.message_time}>{dayjs(messageTime).format('L LT')}</span>
         </div>
         <div classList={styles.row}>
-          <span classList={styles.lastMessage}>
+          <span classList={styles.last_message}>
             {lastMessage.isYou ? <span classList={styles.you}>Вы: </span> : ''}
             {lastMessage.text}
           </span>

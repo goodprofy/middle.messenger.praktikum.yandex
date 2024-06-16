@@ -1,9 +1,8 @@
-import styles from './styles.module.scss';
 import photoPng from './assets/photo.png';
 
 export const Messages: FC = () => {
   return (
-    <div className={styles.messages}>
+    <div>
       <img src={photoPng} />
     </div>
   );

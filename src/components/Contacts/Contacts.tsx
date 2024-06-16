@@ -1,5 +1,4 @@
 import { Contact } from './components';
-import styles from './styles.module.scss';
 
 const CONTACTS: ComponentProps<typeof Contact>[] = [
   {
@@ -40,10 +39,10 @@ const CONTACTS: ComponentProps<typeof Contact>[] = [
 
 export const Contacts: FC = () => {
   return (
-    <ul className={styles.contacts}>
+    <ul>
       {CONTACTS.map((rest) => {
         return (
-          <li className={styles.contact}>
+          <li>
             <Contact {...rest} />
           </li>
         );

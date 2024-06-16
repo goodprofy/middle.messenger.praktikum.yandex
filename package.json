@@ -7,6 +7,7 @@
     "dev": "vite",
     "preview": "vite preview",
     "server": "node server.js",
+    "start": "npm run build && npm run server",
     "stylelint:fix": "stylelint \"**/*.scss\" --fix",
     "stylelint": "stylelint \"**/*.scss\"",
     "test": "jest",

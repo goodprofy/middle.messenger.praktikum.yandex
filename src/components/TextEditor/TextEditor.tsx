@@ -16,7 +16,7 @@ export const TextEditor: FC = () => {
 
   return (
     <label id={id} className={styles.text_editor}>
-      <Input value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} />
+      <Input value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} name="message" />
       <span className={styles.label}>Поиск</span>
     </label>
   );

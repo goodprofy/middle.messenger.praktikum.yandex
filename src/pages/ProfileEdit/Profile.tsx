@@ -1,7 +1,6 @@
 import { Flex, Link, Title } from '../../components';
 import { useUser } from '../../hooks';
-import { Avatar } from './Components';
-import { ProfileRow } from './Components/ProfileRow';
+import { Avatar, ProfileRow } from './components';
 import styles from './styles.module.scss';
 
 export const Profile = () => {

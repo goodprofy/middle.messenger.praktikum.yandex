@@ -1,0 +1,17 @@
+.user_settings {
+  padding: 60px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  max-width: 510px;
+  width: 100%;
+  margin: auto;
+  gap: 2rem;
+}
+
+.arrow_right {
+  color: var(--color-primary);
+  width: 28px;
+}

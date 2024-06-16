@@ -26,3 +26,4 @@ npm run dev
 
 После запуска на главной странице будут все ссылки.
 
+https://warcraft-messenger.netlify.app

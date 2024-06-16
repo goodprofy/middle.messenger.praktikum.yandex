@@ -8,11 +8,11 @@ export const MessageInput: FC = () => {
   return (
     <Form onSubmit={onSubmit}>
       <div className={styles.message_input}>
-        <Button isFullWidth={false} name="add" title="Add" />
+        <Button isFullWidth={false} title="Add" />
         <div className={styles.text_editor}>
           <TextEditor />
         </div>
-        <Button isFullWidth={false} name="send" title="Send" type="submit" />
+        <Button isFullWidth={false} title="Send" type="submit" />
       </div>
     </Form>
   );

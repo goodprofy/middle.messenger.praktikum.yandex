@@ -1,5 +1,17 @@
 import { Chat as LayoutChat, Public as LayoutPublic, User as LayoutUser } from '../layout';
-import { SignIn, NotFound, ServerError, SignUp, Profile, Chats, Chat, Home } from '../pages';
+import {
+  AvatarEdit,
+  Chat,
+  Chats,
+  Home,
+  NotFound,
+  Profile,
+  ProfileEdit,
+  ProfilePasswordEdit,
+  ServerError,
+  SignIn,
+  SignUp
+} from '../pages';
 
 export const Router = () => {
   const checkPath = (path: string) => {
@@ -36,6 +48,31 @@ export const Router = () => {
       <LayoutChat>
         <Chat />
       </LayoutChat>
+    );
+  }
+
+  if (checkPath('/profile/password')) {
+    return (
+      <LayoutUser>
+        <ProfilePasswordEdit />
+      </LayoutUser>
+    );
+  }
+
+  if (checkPath('/profile/avatar')) {
+    return (
+      <LayoutUser>
+        <Profile />
+        <AvatarEdit />
+      </LayoutUser>
+    );
+  }
+
+  if (checkPath('/profile/edit')) {
+    return (
+      <LayoutUser>
+        <ProfileEdit />
+      </LayoutUser>
     );
   }
 

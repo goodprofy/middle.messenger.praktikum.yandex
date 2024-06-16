@@ -11,7 +11,7 @@ export const SignUp = () => {
         <InputField name="phone" type="tel" label="Телефон" required />
         <InputField name="password" type="password" label="Пароль" required />
         <InputField name="password_confirm" type="password" label="Пароль (ещё раз)" required />
-        <Button type="submit" title="Зарегистрироваться" name="SignUp" />
+        <Button type="submit" title="Зарегистрироваться" />
         <Link to={'/sign-in'} title="Войти" />
       </Form>
     </Modal>

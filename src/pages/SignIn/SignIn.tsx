@@ -6,7 +6,7 @@ export const SignIn = () => {
       <Form>
         <InputField name="login" type="text" label="Логин" required />
         <InputField name="password" type="password" label="Пароль" required />
-        <Button type="submit" title="Авторизоваться" name="SignIn" />
+        <Button type="submit" title="Авторизоваться" />
         <Link to={'/sign-up'} title="Нет аккаунта?" />
       </Form>
     </Modal>

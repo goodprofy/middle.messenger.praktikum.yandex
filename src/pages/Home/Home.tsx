@@ -17,6 +17,15 @@ export const Home: FC = () => {
           <Link to={'/chat'} title="Чат" />
         </li>
         <li>
+          <Link to={'/profile/avatar'} title="Редактировать аватар" />
+        </li>
+        <li>
+          <Link to={'/profile/password'} title="Редактировать пароль" />
+        </li>
+        <li>
+          <Link to={'/profile/edit'} title="Редактировать профайл" />
+        </li>
+        <li>
           <Link to={'/profile'} title="Профайл" />
         </li>
         <li>

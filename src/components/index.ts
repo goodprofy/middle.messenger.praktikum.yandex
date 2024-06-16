@@ -1,3 +1,4 @@
+export * from './AvatarProfile';
 export * from './Button';
 export * from './Contacts';
 export * from './Flex';
@@ -9,6 +10,7 @@ export * from './Modal';
 export * from './Page';
 export * from './PageError';
 export * from './Portal';
+export * from './ProfileRowEdit';
 export * from './Search';
 export * from './Sidebar';
 export * from './Text';

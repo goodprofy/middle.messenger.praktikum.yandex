@@ -8,11 +8,11 @@ type Props = {
   type?: HTMLButtonElement['type'];
   /** @default true */
   isFullWidth?: boolean;
-} & Pick<HTMLButtonElement, 'name'>;
+};
 
-export const Button: FC<Props> = ({ onClick, title, type = 'button', name, isFullWidth = true }) => {
+export const Button: FC<Props> = ({ onClick, title, type = 'button', isFullWidth = true }) => {
   return (
-    <button name={name} className={clsx(style.button, isFullWidth && style.full_width)} onClick={onClick} type={type}>
+    <button className={clsx(style.button, isFullWidth && style.full_width)} onClick={onClick} type={type}>
       {title}
     </button>
   );

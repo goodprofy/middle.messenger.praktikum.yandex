@@ -1,5 +1,7 @@
 # warcraft messenger
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/72ecce6c-c201-4db6-b504-4b62458ad995/deploy-status)](https://app.netlify.com/sites/warcraft-messenger/deploys)
+
 Актуальная версия UI 
 
 https://www.figma.com/design/jAAm003UttGwM9yP6FXre7/warcraft-messenger?node-id=0-1&t=MDa0Pv02NoMm18vM-1

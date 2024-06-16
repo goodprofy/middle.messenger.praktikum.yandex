@@ -1,5 +1,11 @@
 type Props = { onSubmit?: () => void };
 
 export const Form: FC<PropsWithChildren<Props>> = ({ children, onSubmit }) => {
-  return <form onSubmit={onSubmit}>{children}</form>;
+  const onFormSubmit = (event: Event) => {
+    if (onSubmit) {
+      event.preventDefault();
+      onSubmit();
+    }
+  };
+  return <form onSubmit={onFormSubmit}>{children}</form>;
 };

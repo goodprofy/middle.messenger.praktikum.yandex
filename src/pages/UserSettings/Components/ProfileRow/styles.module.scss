@@ -1,0 +1,12 @@
+.profile_row {
+  border-bottom: 1px solid #eaeaea;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.value {
+  color: var(--color-secondary);
+}

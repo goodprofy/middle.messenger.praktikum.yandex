@@ -1,11 +1,6 @@
-import { Layout } from './layout';
-import { SignIn } from './pages';
+import { Router } from './router';
 import './styles.scss';
 
 export const App = () => {
-  return (
-    <Layout>
-      <SignIn />
-    </Layout>
-  );
+  return <Router />;
 };

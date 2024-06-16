@@ -1,5 +1,5 @@
-import { Title } from "../../components";
+import { PageError } from '../../components';
 
 export const ServerError = () => {
-  return <Title>ServerError</Title>;
+  return <PageError subTitle="Мы уже фиксим" title="500" titleBackLink="Назад к чатам" />;
 };

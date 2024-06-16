@@ -15,7 +15,7 @@ export const InputField: FC<Props> = ({ label, errors, ...inputRest }) => {
   return (
     <div className={styles.input_field} isColumn gap={1}>
       <label htmlFor={id}>{label}</label>
-      <Input {...inputRest} id={id} />
+      <Input {...inputRest} name={id} />
       {hasErrors ? (
         <Flex>
           <TextError>{errors.join('.')}</TextError>

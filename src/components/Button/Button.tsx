@@ -12,13 +12,7 @@ type Props = {
 
 export const Button: FC<Props> = ({ onClick, title, type = 'button', name, isFullWidth = true }) => {
   return (
-    <button
-      name={name}
-      testID={name}
-      className={clsx(style.button, isFullWidth && style.full_width)}
-      onClick={onClick}
-      type={type}
-    >
+    <button name={name} className={clsx(style.button, isFullWidth && style.full_width)} onClick={onClick} type={type}>
       {title}
     </button>
   );

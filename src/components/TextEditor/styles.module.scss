@@ -1,0 +1,21 @@
+.text_editor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 12px;
+  font-weight: 500;
+
+  input {
+    border-radius: 5px;
+    background: #efefef;
+    padding: 10px;
+    text-align: left;
+  }
+}
+
+.label {
+  position: absolute;
+  color: #999;
+  left: 10px;
+}

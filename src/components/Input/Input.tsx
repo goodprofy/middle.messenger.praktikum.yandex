@@ -3,11 +3,22 @@ import { InputType, PropsBaseInput, PropsNumberInput, PropsTextInput } from './t
 
 type Props<T extends InputType> = T extends 'number'
   ? PropsBaseInput<T, PropsNumberInput>
-  : T extends 'text' | 'email' | 'password' | 'tel'
+  : T extends 'text' | 'email' | 'password' | 'tel' | 'search'
     ? PropsBaseInput<T, PropsTextInput>
     : never;
 
-export const Input = <T extends InputType>({ id, max, min, onChange, readOnly, required, type, value }: Props<T>) => {
+export const Input = <T extends InputType>({
+  max,
+  min,
+  name,
+  onBlur,
+  onChange,
+  onFocus,
+  readOnly,
+  required,
+  type,
+  value
+}: Props<T>) => {
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       const { value } = event.target;
@@ -22,7 +33,8 @@ export const Input = <T extends InputType>({ id, max, min, onChange, readOnly, r
 
   return (
     <input
-      id={id}
+      id={name}
+      name={name}
       className={styles.input}
       max={max}
       min={min}
@@ -31,6 +43,8 @@ export const Input = <T extends InputType>({ id, max, min, onChange, readOnly, r
       required={required}
       type={type}
       value={value ?? ''}
+      onBlur={onBlur}
+      onFocus={onFocus}
     />
   );
 };

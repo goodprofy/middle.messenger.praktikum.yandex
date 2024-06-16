@@ -1,8 +1,10 @@
-export type InputType = 'number' | 'text' | 'email' | 'password' | 'tel';
+export type InputType = 'number' | 'text' | 'email' | 'password' | 'tel' | 'search';
 
 export type PropsBaseInput<Type, Expand> = {
   type: Type;
-} & Partial<Pick<HTMLInputElement, 'id' | 'readOnly' | 'required'>> &
+  onFocus?: () => void;
+  onBlur?: () => void;
+} & Partial<Pick<HTMLInputElement, 'name' | 'readOnly' | 'required'>> &
   Expand;
 
 export type PropsNumberInput = {

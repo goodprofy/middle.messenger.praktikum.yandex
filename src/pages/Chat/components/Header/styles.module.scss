@@ -1,0 +1,25 @@
+.header {
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+}
+
+.user {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  background-color: #efefef;
+  border-radius: 100%;
+}
+
+.name {
+  color: #1e1e1e;
+  font-size: 13px;
+  font-weight: 600;
+}

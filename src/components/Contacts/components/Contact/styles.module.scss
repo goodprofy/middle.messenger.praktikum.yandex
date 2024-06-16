@@ -1,0 +1,68 @@
+.contact {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.user_name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #1e1e1e;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+}
+
+.message_time {
+  color: #999;
+  text-align: right;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 13px;
+}
+
+.lastMessage {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #999;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+.you {
+  font-weight: 700;
+}
+
+.unread_message {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-primary);
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 12px;
+}

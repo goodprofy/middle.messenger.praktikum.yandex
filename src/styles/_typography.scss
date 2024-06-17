@@ -1,0 +1,7 @@
+@import './fonts';
+
+body {
+  font-size: var(--font-size);
+
+  @extend %inter_regular;
+}

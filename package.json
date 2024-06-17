@@ -1,0 +1,49 @@
+{
+  "name": "warcraft-messenger",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "server": "node server.js",
+    "start": "npm run build && npm run server",
+    "stylelint:fix": "stylelint \"**/*.scss\" --fix",
+    "stylelint": "stylelint \"**/*.scss\"",
+    "test": "jest",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "dayjs": "1.11.11",
+    "express": "4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/jest": "29.5.12",
+    "@types/node": "20.14.2",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "lint-staged": "15.2.7",
+    "prettier": "3.3.2",
+    "sass": "1.77.5",
+    "stylelint": "16.6.1",
+    "stylelint-config-standard-scss": "13.1.0",
+    "stylelint-no-unsupported-browser-features": "8.0.1",
+    "stylelint-order": "6.0.4",
+    "ts-jest": "29.1.4",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.5",
+    "vite": "5.2.13"
+  },
+  "lint-staged": {
+    "*.{tsx,ts,jsx,js}": [
+      "prettier --write"
+    ],
+    "*.{scss}": [
+      "stylelint --fix"
+    ],
+    "*.{md,html,css,scss,json,mjml}": [
+      "prettier --write"
+    ]
+  }
+}

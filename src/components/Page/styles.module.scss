@@ -1,0 +1,10 @@
+.page {
+  flex: 1;
+  flex-direction: column;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,31 @@
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+$gaps: (
+  1: 0.5rem,
+  2: 1rem,
+  3: 1.5rem
+);
+
+@mixin generate-gap-classes($map) {
+  @each $key, $value in $map {
+    .gap_#{$key} {
+      gap: $value;
+    }
+    .mb_#{$key} {
+      margin-bottom: $value;
+    }
+  }
+}
+
+@include generate-gap-classes($gaps);

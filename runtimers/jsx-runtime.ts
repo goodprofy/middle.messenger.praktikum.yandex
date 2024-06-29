@@ -25,15 +25,15 @@ export function h(
     }
   });
 
-  children.forEach((child) => {
-    if (typeof child === 'string') {
-      element.innerText += child;
+  children.flat().forEach((child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      element.appendChild(document.createTextNode(String(child)));
     } else if (child instanceof Node) {
       element.appendChild(child);
     } else if (Array.isArray(child)) {
       child.forEach((nestedChild) => {
-        if (typeof nestedChild === 'string') {
-          element.innerText += nestedChild;
+        if (typeof nestedChild === 'string' || typeof nestedChild === 'number') {
+          element.appendChild(document.createTextNode(String(nestedChild)));
         } else if (nestedChild instanceof Node) {
           element.appendChild(nestedChild);
         }
@@ -44,6 +44,14 @@ export function h(
   return element;
 }
 
-export function Fragment(props: { children: any[] }) {
-  return props.children.filter(isDefined);
-}
+export const Fragment = (props: { children: any[] }) => {
+  const fragment = document.createDocumentFragment();
+  props.children.flat().forEach((child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      fragment.appendChild(document.createTextNode(String(child)));
+    } else if (child instanceof Node) {
+      fragment.appendChild(child);
+    }
+  });
+  return fragment;
+};

@@ -1,3 +1,4 @@
+export * from './useFetch';
 export * from './useId';
 export * from './usePortal';
 export * from './useUser';

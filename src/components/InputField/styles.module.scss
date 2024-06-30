@@ -2,7 +2,25 @@
   display: flex;
   flex-direction: column;
   border: none;
-  border-bottom: 1px solid var(--color-primary);
   font-size: var(--font-size-input);
   margin-bottom: 1rem;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.errors {
+  font-size: 0.8rem;
+  min-height: 20px;
+  opacity: 0;
+  transition: all 1s;
+  will-change: opacity;
+}
+
+.errors_show {
+  opacity: 1;
 }

@@ -1,23 +1,46 @@
-import { useUUID } from '../../hooks';
+import { Component } from '../../class';
+import { clsx } from '../../utils';
 import { Input } from '../Input';
 import styles from './styles.module.scss';
 
-export const TextEditor: FC = () => {
-  const id = useUUID();
-  const onInputChange = () => {};
-  const onInputFocus = () => {
-    const labelNode = document.getElementById(id);
-    labelNode?.classList.add('focus');
-  };
-  const onInputBlur = () => {
-    const labelNode = document.getElementById(id);
-    labelNode?.classList.remove('focus');
+type State = {
+  value: string;
+  hasFocus: boolean;
+};
+
+export class TextEditor extends Component<{}, State> {
+  state: State = { hasFocus: false, value: '' };
+
+  constructor(props: {}) {
+    super(props);
+  }
+
+  onInputChange = (value: string) => {
+    this.setState({ value });
   };
 
-  return (
-    <label id={id} className={styles.text_editor}>
-      <Input value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} name="message" />
-      <span className={styles.label}>Поиск</span>
-    </label>
-  );
-};
+  onInputFocus = () => {
+    this.setState({ hasFocus: true });
+  };
+
+  onInputBlur = () => {
+    this.setState({ hasFocus: false });
+  };
+
+  render() {
+    const { hasFocus } = this.state;
+    return (
+      <label className={clsx(styles.text_editor, hasFocus && styles.focus)}>
+        <Input
+          value={this.state.value}
+          type="text"
+          onChange={this.onInputChange}
+          name="message"
+          onFocus={this.onInputFocus}
+          onBlur={this.onInputBlur}
+        />
+        <span className={styles.label}>Сообщение</span>
+      </label>
+    );
+  }
+}

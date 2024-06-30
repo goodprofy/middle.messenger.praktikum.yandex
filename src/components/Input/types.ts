@@ -4,7 +4,8 @@ export type PropsBaseInput<Type, Expand> = {
   type: Type;
   onFocus?: () => void;
   onBlur?: () => void;
-} & Partial<Pick<HTMLInputElement, 'name' | 'readOnly' | 'required'>> &
+  ref?: (el: HTMLInputElement) => void;
+} & Partial<Pick<HTMLInputElement, 'name' | 'readOnly' | 'required' | 'maxLength' | 'minLength' | 'pattern'>> &
   Expand;
 
 export type PropsNumberInput = {

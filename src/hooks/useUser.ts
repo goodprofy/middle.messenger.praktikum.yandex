@@ -1,4 +1,6 @@
-const profile = {
+import { Profile } from '../types';
+
+const profile: Profile = {
   email: { title: 'Почта', value: 'pochta@yandex.ru' },
   login: { title: 'Логин', value: 'ivanivanov' },
   first_name: { title: 'Имя', value: 'Иван' },

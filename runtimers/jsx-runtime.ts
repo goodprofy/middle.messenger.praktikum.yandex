@@ -1,5 +1,10 @@
 import { isDefined } from '../src/utils';
 
+type ComponentConstructor = new (props: { [key: string]: any; children: any[] }) => {
+  element: HTMLElement;
+  render: () => HTMLElement;
+};
+
 export function h(
   tag: keyof HTMLElementTagNameMap | Function,
   props: { [key: string]: any; key?: string },
@@ -11,7 +16,7 @@ export function h(
     const isClassComponent = tag.prototype && tag.prototype.render;
 
     if (isClassComponent) {
-      const componentInstance = new tag({ ...props, children });
+      const componentInstance = new (tag as ComponentConstructor)({ ...props, children });
       result = componentInstance.render();
       componentInstance.element = result;
     } else {

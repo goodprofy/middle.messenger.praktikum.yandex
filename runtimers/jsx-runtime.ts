@@ -1,23 +1,37 @@
 import { isDefined } from '../src/utils';
 
 export function h(
-  tag: keyof HTMLElementTagNameMap | FC<any>,
-  props: { [key: string]: any },
+  tag: keyof HTMLElementTagNameMap | Function,
+  props: { [key: string]: any; key?: string },
   ...children: any[]
 ): HTMLElement | null {
   if (typeof tag === 'function') {
-    const result = tag({ ...props, children });
-    if (result === null) {
-      return null;
+    let result;
+
+    const isClassComponent = tag.prototype && tag.prototype.render;
+
+    if (isClassComponent) {
+      const componentInstance = new tag({ ...props, children });
+      result = componentInstance.render();
+      componentInstance.element = result;
+    } else {
+      result = tag({ ...props, children });
     }
+
     return result as unknown as HTMLElement;
   }
 
   const element = document.createElement(tag);
 
   Object.entries(props || {}).forEach(([key, value]) => {
-    if (key.startsWith('on') && typeof value === 'function' && key.toLowerCase() in window) {
-      element.addEventListener(key.toLowerCase().substring(2), props[key]);
+    if (key === 'ref' && typeof value === 'function') {
+      value(element);
+    } else if (key.startsWith('on') && typeof value === 'function' && key.toLowerCase() in window) {
+      if (key.toLowerCase() === 'onchange') {
+        element.addEventListener('input', props[key]);
+      } else {
+        element.addEventListener(key.toLowerCase().substring(2), props[key]);
+      }
     } else if (key === 'className' && isDefined(value)) {
       element.classList.add(...((value as string) || '').trim().split(' '));
     } else if (isDefined(value)) {
@@ -25,26 +39,26 @@ export function h(
     }
   });
 
-  children.flat().forEach((child) => {
+  const appendChild = (child: Node | Node[]) => {
     if (typeof child === 'string' || typeof child === 'number') {
       element.appendChild(document.createTextNode(String(child)));
     } else if (child instanceof Node) {
       element.appendChild(child);
     } else if (Array.isArray(child)) {
-      child.forEach((nestedChild) => {
-        if (typeof nestedChild === 'string' || typeof nestedChild === 'number') {
-          element.appendChild(document.createTextNode(String(nestedChild)));
-        } else if (nestedChild instanceof Node) {
-          element.appendChild(nestedChild);
-        }
-      });
+      child.forEach(appendChild);
     }
-  });
+  };
+
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+
+  children.flat().forEach(appendChild);
 
   return element;
 }
 
-export const Fragment = (props: { children: any[] }) => {
+export function Fragment(props: { children: any[] }) {
   const fragment = document.createDocumentFragment();
   props.children.flat().forEach((child) => {
     if (typeof child === 'string' || typeof child === 'number') {
@@ -54,4 +68,4 @@ export const Fragment = (props: { children: any[] }) => {
     }
   });
   return fragment;
-};
+}

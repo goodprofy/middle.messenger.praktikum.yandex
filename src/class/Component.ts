@@ -60,9 +60,6 @@ export class Component<P = {}, S = {}> {
         appendChildToElement(mountedElement, newChild);
       } else if (!compareNodes(existingChild, newChild)) {
         if (mountedElement.contains(existingChild)) {
-          console.log(mountedElement);
-          console.log(newChild);
-          console.log(existingChild);
           mountedElement.replaceChild(newChild, existingChild);
         }
       }

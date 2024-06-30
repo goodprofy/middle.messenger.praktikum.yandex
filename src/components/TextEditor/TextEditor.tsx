@@ -3,20 +3,24 @@ import { clsx } from '../../utils';
 import { Input } from '../Input';
 import styles from './styles.module.scss';
 
-type State = {
+type Props = {
   value: string;
+  onChange: (value: Props['value']) => void;
+};
+
+type State = {
   hasFocus: boolean;
 };
 
-export class TextEditor extends Component<{}, State> {
-  state: State = { hasFocus: false, value: '' };
+export class TextEditor extends Component<Props, State> {
+  state: State = { hasFocus: false };
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
   }
 
   onInputChange = (value: string) => {
-    this.setState({ value });
+    this.props.onChange(value);
   };
 
   onInputFocus = () => {
@@ -28,15 +32,19 @@ export class TextEditor extends Component<{}, State> {
   };
 
   render() {
+    const { value } = this.props;
     const { hasFocus } = this.state;
+    const hasValue = value.length > 0;
+    const isActive = hasValue || hasFocus;
+
     return (
-      <label className={clsx(styles.text_editor, hasFocus && styles.focus)}>
+      <label className={clsx(styles.text_editor, isActive && styles.focus)}>
         <Input
-          value={this.state.value}
+          value={value}
           type="text"
-          onChange={this.onInputChange}
           name="message"
           required
+          onChange={this.onInputChange}
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
         />

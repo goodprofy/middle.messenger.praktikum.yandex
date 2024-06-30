@@ -1,5 +1,3 @@
-import { isDefined } from '../utils';
-
 type SetStateCallback<S> = (state: S) => void;
 type Key = symbol | string;
 
@@ -25,7 +23,7 @@ export class Component<P = {}, S = {}> {
 
   protected update() {
     const oldElement = this.element;
-    const newElement = this.render();
+    const newElement = this.render() as unknown as HTMLElement; //TODO: Fix me
 
     if (oldElement && newElement && oldElement.parentNode) {
       this.updateElement(oldElement, newElement);
@@ -50,70 +48,39 @@ export class Component<P = {}, S = {}> {
     const mountedExistingChildren = Array.from(mountedElement.childNodes);
     const newExistingChildren = Array.from(newElement.childNodes);
 
+    while (mountedExistingChildren.length > newExistingChildren.length) {
+      const lastChild = mountedExistingChildren.pop();
+      if (lastChild) {
+        mountedElement.removeChild(lastChild);
+      }
+    }
+
     newExistingChildren.forEach((newChild, index) => {
       const existingChild = mountedExistingChildren[index];
-      if (!isDefined(newChild)) {
-        if (existingChild) {
-          mountedElement.removeChild(existingChild);
-        }
-      } else if (!existingChild) {
+
+      if (!existingChild) {
         appendChildToElement(mountedElement, newChild);
-      } else if (!compareNodes(existingChild, newChild)) {
-        if (mountedElement.contains(existingChild)) {
-          mountedElement.replaceChild(newChild, existingChild);
+      } else if (existingChild.nodeType === newChild.nodeType) {
+        if (existingChild.nodeType === Node.ELEMENT_NODE) {
+          this.updateElement(existingChild as HTMLElement, newChild as HTMLElement);
+        } else if (existingChild.nodeValue !== newChild.nodeValue) {
+          const importedNode = document.importNode(newChild, true);
+          mountedElement.replaceChild(importedNode, existingChild);
         }
+      } else {
+        mountedElement.replaceChild(document.importNode(newChild, true), existingChild);
       }
     });
   }
 
-  public render(): HTMLUnknownElement | null {
+  public render(): JSX.Element | null {
     return null;
   }
 }
 
-function compareNodes(node1: Node, node2: Node) {
-  if (node1 === node2) {
-    return true;
-  }
-
-  if (node1.nodeType !== node2.nodeType) {
-    return false;
-  }
-
-  switch (node1.nodeType) {
-    case Node.ELEMENT_NODE:
-      if (node1.tagName !== node2.tagName || node1.namespaceURI !== node2.namespaceURI) {
-        return false;
-      }
-      break;
-
-    case Node.TEXT_NODE:
-    case Node.COMMENT_NODE:
-      if (node1.textContent !== node2.textContent) {
-        return false;
-      }
-      break;
-  }
-
-  if (node1.childNodes.length !== node2.childNodes.length) {
-    return false;
-  }
-
-  for (let i = 0; i < node1.childNodes.length; i++) {
-    if (!compareNodes(node1.childNodes[i], node2.childNodes[i])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function appendChildToElement(element: HTMLElement, child: any) {
-  if (typeof child === 'string' || typeof child === 'number') {
-    element.appendChild(document.createTextNode(String(child)));
-  } else if (child instanceof Node) {
-    element.appendChild(child);
-  }
+function appendChildToElement(parent: HTMLElement, child: Node) {
+  const importedNode = document.importNode(child, true);
+  parent.appendChild(importedNode);
 }
 
 function createElementFromVirtual(virtual: any): Node {

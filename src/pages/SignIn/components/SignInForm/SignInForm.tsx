@@ -1,6 +1,6 @@
 import { Component } from '../../../../class';
 import { Button, Form, InputField, Link } from '../../../../components';
-import { PASSWORD_REG_EXP } from '../../../../constants';
+import { LOGIN_REG_EXP, PASSWORD_REG_EXP } from '../../../../constants';
 import { getInputErrorMessage } from '../../../../utils';
 
 type Fields = {
@@ -58,7 +58,8 @@ export class SignInForm extends Component<{}, State> {
           label="Логин"
           required
           minLength={3}
-          maxLength={18}
+          maxLength={20}
+          pattern={LOGIN_REG_EXP.source}
           checkValidity={this.checkInputValidity}
           errors={this.state.errors.login}
         />
@@ -70,9 +71,9 @@ export class SignInForm extends Component<{}, State> {
           type="password"
           label="Пароль"
           required
-          pattern={PASSWORD_REG_EXP}
-          minLength={6}
-          maxLength={24}
+          pattern={PASSWORD_REG_EXP.source}
+          minLength={8}
+          maxLength={40}
           checkValidity={this.checkInputValidity}
           errors={this.state.errors.password}
         />

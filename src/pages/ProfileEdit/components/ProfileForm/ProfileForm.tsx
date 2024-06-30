@@ -1,5 +1,6 @@
 import { Component } from '../../../../class';
 import { Button, Form, ProfileRowEdit } from '../../../../components';
+import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
 import { Profile } from '../../../../types';
 import { getInputErrorMessage } from '../../../../utils';
 
@@ -54,6 +55,7 @@ export class ProfileForm extends Component<Props, State> {
             title={email.title}
             value={email.value}
             type="email"
+            pattern={EMAIL_REG_EXP.source}
             errors={errors.email}
             checkValidity={this.checkInputValidity}
             required
@@ -66,12 +68,16 @@ export class ProfileForm extends Component<Props, State> {
             errors={errors.login}
             checkValidity={this.checkInputValidity}
             required
+            pattern={LOGIN_REG_EXP.source}
+            minLength={3}
+            maxLength={20}
           />
           <ProfileRowEdit
             name="first_name"
             title={first_name.title}
             value={first_name.value}
             type="text"
+            pattern={NAME_REG_EXP.source}
             errors={errors.first_name}
             checkValidity={this.checkInputValidity}
             required
@@ -82,6 +88,7 @@ export class ProfileForm extends Component<Props, State> {
             value={second_name.value}
             type="text"
             errors={errors.second_name}
+            pattern={NAME_REG_EXP.source}
             checkValidity={this.checkInputValidity}
             required
           />
@@ -99,6 +106,7 @@ export class ProfileForm extends Component<Props, State> {
             title={phone.title}
             value={phone.value}
             type="tel"
+            pattern={PHONE_REG_EXP.source}
             errors={errors.phone}
             checkValidity={this.checkInputValidity}
             required

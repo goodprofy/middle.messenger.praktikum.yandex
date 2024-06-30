@@ -36,6 +36,7 @@ export class TextEditor extends Component<{}, State> {
           type="text"
           onChange={this.onInputChange}
           name="message"
+          required
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
         />

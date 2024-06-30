@@ -1,6 +1,6 @@
 import { Component } from '../../../../class';
 import { Button, Form, InputField, Link } from '../../../../components';
-import { PASSWORD_REG_EXP } from '../../../../constants';
+import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PASSWORD_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
 import { getInputErrorMessage } from '../../../../utils';
 
 type Fields = {
@@ -52,14 +52,23 @@ export class SignUpForm extends Component<{}, State> {
     const { errors } = this.state;
     return (
       <Form onSubmit={this.onFormSubmit} checkValidity={this.checkFormValidity}>
-        <InputField name="email" type="email" label="Почта" required errors={errors.email} />
+        <InputField
+          name="email"
+          type="email"
+          label="Почта"
+          required
+          pattern={EMAIL_REG_EXP.source}
+          errors={errors.email}
+          checkValidity={this.checkInputValidity}
+        />
         <InputField
           name="login"
           type="text"
           label="Логин"
           required
+          pattern={LOGIN_REG_EXP.source}
           minLength={3}
-          maxLength={18}
+          maxLength={20}
           errors={errors.login}
           checkValidity={this.checkInputValidity}
         />
@@ -68,8 +77,7 @@ export class SignUpForm extends Component<{}, State> {
           type="text"
           label="Имя"
           required
-          minLength={3}
-          maxLength={18}
+          pattern={NAME_REG_EXP.source}
           errors={errors.first_name}
           checkValidity={this.checkInputValidity}
         />
@@ -78,8 +86,7 @@ export class SignUpForm extends Component<{}, State> {
           type="text"
           label="Фамилия"
           required
-          minLength={3}
-          maxLength={18}
+          pattern={NAME_REG_EXP.source}
           errors={errors.second_name}
           checkValidity={this.checkInputValidity}
         />
@@ -88,6 +95,7 @@ export class SignUpForm extends Component<{}, State> {
           type="tel"
           label="Телефон"
           required
+          pattern={PHONE_REG_EXP.source}
           errors={errors.phone}
           checkValidity={this.checkInputValidity}
         />
@@ -96,9 +104,9 @@ export class SignUpForm extends Component<{}, State> {
           type="password"
           label="Пароль"
           required
-          pattern={PASSWORD_REG_EXP}
-          minLength={6}
-          maxLength={24}
+          pattern={PASSWORD_REG_EXP.source}
+          minLength={8}
+          maxLength={40}
           errors={errors.password}
           checkValidity={this.checkInputValidity}
         />
@@ -107,9 +115,9 @@ export class SignUpForm extends Component<{}, State> {
           type="password"
           label="Пароль (ещё раз)"
           required
-          pattern={PASSWORD_REG_EXP}
-          minLength={6}
-          maxLength={24}
+          pattern={PASSWORD_REG_EXP.source}
+          minLength={8}
+          maxLength={40}
           errors={errors.password_confirm}
           checkValidity={this.checkInputValidity}
         />

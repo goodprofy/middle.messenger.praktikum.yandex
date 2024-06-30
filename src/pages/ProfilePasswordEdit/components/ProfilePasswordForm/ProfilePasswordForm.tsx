@@ -59,7 +59,9 @@ export class ProfilePasswordForm extends Component<{}, State> {
             title="Старый пароль"
             value={oldPassword}
             type="password"
-            pattern={PASSWORD_REG_EXP}
+            pattern={PASSWORD_REG_EXP.source}
+            minLength={8}
+            maxLength={40}
             errors={errors.oldPassword}
             checkValidity={this.checkInputValidity}
             required
@@ -69,7 +71,9 @@ export class ProfilePasswordForm extends Component<{}, State> {
             title="Новый пароль"
             value={newPassword}
             type="password"
-            pattern={PASSWORD_REG_EXP}
+            pattern={PASSWORD_REG_EXP.source}
+            minLength={8}
+            maxLength={40}
             errors={errors.newPassword}
             checkValidity={this.checkInputValidity}
             required
@@ -79,7 +83,9 @@ export class ProfilePasswordForm extends Component<{}, State> {
             title="Повторите новый пароль"
             value={confirmPassword}
             type="password"
-            pattern={PASSWORD_REG_EXP}
+            pattern={PASSWORD_REG_EXP.source}
+            minLength={8}
+            maxLength={40}
             errors={errors.confirmPassword}
             checkValidity={this.checkInputValidity}
             required

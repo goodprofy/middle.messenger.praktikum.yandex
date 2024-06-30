@@ -98,6 +98,16 @@ function compareNodes(node1: Node, node2: Node) {
       break;
   }
 
+  if (node1.childNodes.length !== node2.childNodes.length) {
+    return false;
+  }
+
+  for (let i = 0; i < node1.childNodes.length; i++) {
+    if (!compareNodes(node1.childNodes[i], node2.childNodes[i])) {
+      return false;
+    }
+  }
+
   return true;
 }
 

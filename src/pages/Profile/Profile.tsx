@@ -22,8 +22,8 @@ export const Profile = () => {
       </div>
 
       <div>
-        <ProfileRow name={<Link to="/" title="Изменить данные" />} />
-        <ProfileRow name={<Link to="/" title="Изменить пароль" />} />
+        <ProfileRow name={<Link to="/profile/edit" title="Изменить данные" />} />
+        <ProfileRow name={<Link to="/profile/password" title="Изменить пароль" />} />
         <ProfileRow name={<Link to="/" title="Выйти" isError />} />
       </div>
     </div>

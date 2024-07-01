@@ -8,8 +8,6 @@
     "skipLibCheck": true,
     "target": "ES2020",
     "useDefineForClassFields": true,
-
-    /* Bundler mode */
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleResolution": "bundler",
@@ -17,8 +15,6 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-
-    /* Linting */
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -33,8 +29,6 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-
-    /* JSX */
     "jsx": "preserve"
   },
   "include": ["src", "runtimers"]

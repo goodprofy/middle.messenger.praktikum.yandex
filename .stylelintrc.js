@@ -1,5 +1,6 @@
 const NAME_PATTERN = /^[a-z0-9]+(_[a-z0-9]+)*$/;
 
+// eslint-disable-next-line no-undef
 module.exports = {
   extends: ['stylelint-config-standard-scss'],
   plugins: ['stylelint-no-unsupported-browser-features', 'stylelint-order'],

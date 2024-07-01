@@ -17,7 +17,11 @@ export const Input = <T extends InputType>({
   readOnly,
   required,
   type,
-  value
+  value,
+  ref,
+  maxLength,
+  minLength,
+  pattern
 }: Props<T>) => {
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
@@ -33,6 +37,7 @@ export const Input = <T extends InputType>({
 
   return (
     <input
+      ref={ref}
       id={name}
       name={name}
       className={styles.input}
@@ -45,6 +50,9 @@ export const Input = <T extends InputType>({
       value={value ?? ''}
       onBlur={onBlur}
       onFocus={onFocus}
+      maxLength={maxLength}
+      minLength={minLength}
+      pattern={pattern}
     />
   );
 };

@@ -15,7 +15,12 @@ type Props = {
 
 export const Contact: FC<Props> = ({ avatar, lastMessage, messageTime, unreadMessage, userName }) => {
   return (
-    <div className={styles.contact}>
+    <div
+      className={styles.contact}
+      onClick={() => {
+        window.location.href = '/chat';
+      }}
+    >
       <Avatar src={avatar} userName={userName} />
       <div className={styles.info}>
         <div classList={styles.row}>

@@ -5,10 +5,10 @@
 }
 
 .sidebar {
+  display: flex;
   width: 70px;
   height: 100%;
-  background-color: #fbfbfb;
-  border-right: 1px solid #eaeaea;
-  display: flex;
   align-items: center;
+  border-right: 1px solid #eaeaea;
+  background-color: #fbfbfb;
 }

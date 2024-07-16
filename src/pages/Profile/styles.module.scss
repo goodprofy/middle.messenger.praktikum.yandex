@@ -1,17 +1,17 @@
 .profile {
-  padding: 60px;
-  flex: 1;
   display: flex;
+  width: 100%;
+  max-width: 510px;
+  flex: 1;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  max-width: 510px;
-  width: 100%;
+  padding: 60px;
   margin: auto;
   gap: 2rem;
 }
 
 .arrow_right {
-  color: var(--color-primary);
   width: 28px;
+  color: var(--color-primary);
 }

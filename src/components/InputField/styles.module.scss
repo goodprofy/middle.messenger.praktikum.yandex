@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   border: none;
-  font-size: var(--font-size-input);
   margin-bottom: 1rem;
+  font-size: var(--font-size-input);
 }
 
 .fieldset {
@@ -14,8 +14,8 @@
 }
 
 .errors {
-  font-size: 0.8rem;
   min-height: 20px;
+  font-size: 0.8rem;
   opacity: 0;
   transition: all 1s;
   will-change: opacity;

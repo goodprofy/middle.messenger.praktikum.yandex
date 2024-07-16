@@ -1,7 +1,7 @@
 type SetStateCallback<S> = (state: S) => void;
 type Key = symbol | string;
 
-export class Component<P = {}, S = {}> {
+export class Component<P = Record<string, unknown>, S = Record<string, unknown>> {
   key: Key;
   props: P;
   state: S;
@@ -10,7 +10,7 @@ export class Component<P = {}, S = {}> {
   constructor(props: P, key?: Key) {
     this.props = props;
     this.state = {} as S;
-    this.key = key || Math.random().toString(36).substring(2);
+    this.key = key ?? Math.random().toString(36).substring(2);
   }
 
   protected setState(newState: Partial<S>, callback?: SetStateCallback<S>) {
@@ -23,7 +23,7 @@ export class Component<P = {}, S = {}> {
 
   protected update() {
     const oldElement = this.element;
-    const newElement = this.render() as unknown as HTMLElement; //TODO: Fix me
+    const newElement = this.render() as unknown as HTMLElement | null; //TODO: Fix me
 
     if (oldElement && newElement && oldElement.parentNode) {
       this.updateElement(oldElement, newElement);
@@ -83,7 +83,7 @@ function appendChildToElement(parent: HTMLElement, child: Node) {
   parent.appendChild(importedNode);
 }
 
-function createElementFromVirtual(virtual: any): Node {
+/* function createElementFromVirtual<T extends HTMLElement>(virtual: T): Node {
   if (Array.isArray(virtual)) {
     const fragment = document.createDocumentFragment();
     virtual.forEach((v) => fragment.appendChild(createElementFromVirtual(v)));
@@ -103,11 +103,11 @@ function createElementFromVirtual(virtual: any): Node {
   return document.createTextNode('');
 }
 
-function createFragmentFromVirtual(children: any[]): DocumentFragment {
+function createFragmentFromVirtual<T extends HTMLElement>(children: T[]): DocumentFragment {
   const fragment = document.createDocumentFragment();
   children.forEach((child) => {
     const childElement = createElementFromVirtual(child);
     fragment.appendChild(childElement);
   });
   return fragment;
-}
+} */

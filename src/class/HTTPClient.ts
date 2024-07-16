@@ -1,3 +1,5 @@
+import { isDefined } from '../utils';
+
 const METHODS = {
   GET: 'GET',
   POST: 'POST',
@@ -10,42 +12,44 @@ type Method = (typeof METHODS)[keyof typeof METHODS];
 export type RequestOptions = {
   headers?: Record<string, string>;
   method?: Method;
-  data?: any;
+  data?: Record<string, unknown>;
   timeout?: number;
 };
 
-function queryStringify(data: Record<string, any>): string {
+function queryStringify(data: Record<string, unknown>): string {
   if (typeof data !== 'object') {
     throw new Error('Data must be an object');
   }
 
   const keys = Object.keys(data);
   return keys.reduce((result, key, index) => {
-    return `${result}${key}=${encodeURIComponent(data[key])}${index < keys.length - 1 ? '&' : ''}`;
+    return `${result}${key}=${encodeURIComponent(String(data[key]))}${index < keys.length - 1 ? '&' : ''}`;
   }, '?');
 }
 
+type HTTPFn = (url: string, options: RequestOptions) => Promise<XMLHttpRequest>;
+
 export class HTTPClient {
-  get = (url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> => {
+  get: HTTPFn = (url, options = {}) => {
     return this.request(url, { ...options, method: METHODS.GET });
   };
 
-  post = (url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> => {
+  post: HTTPFn = (url, options) => {
     return this.request(url, { ...options, method: METHODS.POST });
   };
 
-  put = (url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> => {
+  put: HTTPFn = (url, options) => {
     return this.request(url, { ...options, method: METHODS.PUT });
   };
 
-  delete = (url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> => {
+  delete: HTTPFn = (url, options) => {
     return this.request(url, { ...options, method: METHODS.DELETE });
   };
 
-  request = (url: string, options: RequestOptions = {}, timeout: number = 5000): Promise<XMLHttpRequest> => {
+  request: HTTPFn = (url, options, timeout: number = 5000) => {
     const { headers = {}, method, data } = options;
     return new Promise((resolve, reject) => {
-      if (!method) {
+      if (!isDefined(method)) {
         reject(new Error('No method'));
         return;
       }
@@ -57,7 +61,7 @@ export class HTTPClient {
 
       Object.keys(headers).forEach((key) => {
         const headerProp = headers[key];
-        if (headerProp) {
+        if (isDefined(headerProp)) {
           xhr.setRequestHeader(key, headerProp);
         }
       });

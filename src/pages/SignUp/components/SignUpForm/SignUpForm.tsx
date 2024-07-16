@@ -1,7 +1,7 @@
 import { Component } from '../../../../class';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PASSWORD_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
-import { getInputErrorMessage } from '../../../../utils';
+import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type Fields = {
   email: string;
@@ -17,7 +17,7 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class SignUpForm extends Component<{}, State> {
+export class SignUpForm extends Component<null, State> {
   state: State = {
     errors: {
       login: [],
@@ -37,7 +37,7 @@ export class SignUpForm extends Component<{}, State> {
   checkFormValidity = () => {};
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
-    if (!fieldName) {
+    if (!isDefined(fieldName)) {
       return;
     }
 

@@ -31,5 +31,5 @@
     "strictPropertyInitialization": true,
     "jsx": "preserve"
   },
-  "include": ["src", "runtimers"]
+  "include": ["src", "runtimers", "vite.config.mts"]
 }

@@ -1,7 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventHandler<T = any> = (data: T) => void;
 
 class EventBus {
-  private events: Map<string, EventHandler[]>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private events: Map<string, EventHandler<any>[]>;
 
   constructor() {
     this.events = new Map();
@@ -19,7 +21,7 @@ class EventBus {
     if (handlers) {
       this.events.set(
         event,
-        handlers.filter((h) => h !== handler)
+        handlers.filter((h: EventHandler<T>) => h !== handler)
       );
     }
   }
@@ -27,7 +29,7 @@ class EventBus {
   emit<T>(event: string, data: T): void {
     const handlers = this.events.get(event);
     if (handlers) {
-      handlers.forEach((handler) => handler(data));
+      handlers.forEach((handler: EventHandler<T>) => handler(data));
     }
   }
 }

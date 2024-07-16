@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 export const PASSWORD_REG_EXP = /(?=.*[A-Z])(?=.*\d).+/;
 export const LOGIN_REG_EXP = /(?=.*[a-zA-Z])[a-zA-Z0-9_\-]*/;
 export const NAME_REG_EXP = /[A-ZА-Я][a-zа-я\-]+/;

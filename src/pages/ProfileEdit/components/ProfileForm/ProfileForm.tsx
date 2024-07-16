@@ -2,7 +2,7 @@ import { Component } from '../../../../class';
 import { Button, Form, ProfileRowEdit } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
 import { Profile } from '../../../../types';
-import { getInputErrorMessage } from '../../../../utils';
+import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type Props = {
   profile: Profile;
@@ -31,7 +31,7 @@ export class ProfileForm extends Component<Props, State> {
   checkFormValidity = () => {};
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
-    if (!fieldName) {
+    if (!isDefined(fieldName)) {
       return;
     }
 

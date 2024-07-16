@@ -1,4 +1,5 @@
 import { Component } from '../../class';
+import { isDefined } from '../../utils';
 import { Input } from '../Input';
 import { TextError } from '../TextError';
 import styles from './styles.module.scss';
@@ -13,7 +14,7 @@ type Props = {
   checkValidity?: (validity: ValidityState, fieldName?: string) => void;
 } & InputProps;
 
-export class ProfileRowEdit extends Component<Props, {}> {
+export class ProfileRowEdit extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
@@ -50,7 +51,7 @@ export class ProfileRowEdit extends Component<Props, {}> {
             onBlur={this.onBlur}
           />
         </label>
-        {errors?.length ? <TextError>{errors.join('. ')}</TextError> : null}
+        {isDefined(errors) && errors.length > 0 ? <TextError>{errors.join('. ')}</TextError> : null}
       </>
     );
   }

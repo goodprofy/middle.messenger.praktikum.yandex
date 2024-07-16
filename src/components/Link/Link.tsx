@@ -1,4 +1,4 @@
-import { clsx } from '../../utils';
+import { clsx, isDefined } from '../../utils';
 import styles from './styles.module.scss';
 
 type Props = {
@@ -10,7 +10,12 @@ type Props = {
 
 export const Link: FC<Props> = ({ isError, target, title, to }) => {
   return (
-    <a href={to} title={title} target={target} className={clsx(styles.link, isError && styles.error)}>
+    <a
+      href={to}
+      title={title}
+      target={target}
+      className={clsx(styles.link, isDefined(isError) && isError && styles.error)}
+    >
       {title}
     </a>
   );

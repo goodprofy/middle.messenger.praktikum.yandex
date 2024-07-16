@@ -5,13 +5,13 @@ type State = {
   messages: string[];
 };
 
-export class Messages extends Component<{}, State> {
+export class Messages extends Component<null, State> {
   state: State = {
     messages: []
   };
 
-  constructor(props: {}) {
-    super(props);
+  constructor() {
+    super(null);
     eventBus.on('chat:send', (message: string) => {
       this.setState({ messages: [...this.state.messages, message] });
     });

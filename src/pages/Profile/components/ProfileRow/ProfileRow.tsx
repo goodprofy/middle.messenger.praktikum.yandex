@@ -1,3 +1,4 @@
+import { isDefined } from '../../../../utils';
 import styles from './styles.module.scss';
 
 type Props = {
@@ -8,8 +9,8 @@ type Props = {
 export const ProfileRow: FC<Props> = ({ name, value }) => {
   return (
     <div className={styles.profile_row}>
-      {name ? <span>{name}</span> : null}
-      {value ? <span className={styles.value}>{value}</span> : null}
+      {isDefined(name) ? <span>{name}</span> : null}
+      {isDefined(value) ? <span className={styles.value}>{value}</span> : null}
     </div>
   );
 };

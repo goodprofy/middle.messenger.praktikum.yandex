@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /// <reference types="vite/client" />
 
 declare namespace JSX {
@@ -16,7 +17,7 @@ declare namespace JSX {
   };
 }
 
-declare type FC<P = {}> = {
+declare type FC<P = Record<string, unknown>> = {
   (props: P): JSX.Element | null;
 };
 
@@ -31,4 +32,8 @@ declare type ChangeEvent<T> = {
 };
 
 declare type ComponentProps<T extends keyof JSX.IntrinsicElements | FC<any>> =
-  T extends FC<infer P> ? P : T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T] : {};
+  T extends FC<infer P>
+    ? P
+    : T extends keyof JSX.IntrinsicElements
+      ? JSX.IntrinsicElements[T]
+      : Record<string, unknown>;

@@ -1,6 +1,6 @@
 import { Component } from '../../../../class';
 import { Button, Form } from '../../../../components';
-import { getInputErrorMessage } from '../../../../utils';
+import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type Fields = {
   avatar: File;
@@ -10,7 +10,7 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class AvatarForm extends Component<{}, State> {
+export class AvatarForm extends Component<null, State> {
   state: State = {
     errors: { avatar: [] }
   };
@@ -20,7 +20,7 @@ export class AvatarForm extends Component<{}, State> {
   };
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
-    if (!fieldName) {
+    if (!isDefined(fieldName)) {
       return;
     }
 

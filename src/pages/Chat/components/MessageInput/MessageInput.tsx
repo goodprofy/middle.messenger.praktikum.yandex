@@ -6,7 +6,7 @@ type State = {
   message: string;
 };
 
-export class MessageInput extends Component<{}, State> {
+export class MessageInput extends Component<null, State> {
   state: State = { message: '' };
 
   onChange = (message: string) => {

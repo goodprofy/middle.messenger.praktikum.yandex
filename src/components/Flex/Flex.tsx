@@ -1,4 +1,4 @@
-import { clsx } from '../../utils';
+import { clsx, isDefined } from '../../utils';
 import styles from './styles.module.scss';
 
 type Props = {
@@ -15,10 +15,10 @@ export const Flex: FC<PropsWithChildren<Props>> = ({ isColumn, children, gap, mb
     <div
       className={clsx(
         styles.flex,
-        isColumn && styles.column,
-        isCenter && styles.center,
-        gap ? styles[`gap_${gap}`] : false,
-        mb ? styles[`mb_${mb}`] : false
+        isDefined(isColumn) && isColumn && styles.column,
+        isDefined(isCenter) && isCenter && styles.center,
+        isDefined(gap) ? styles[`gap_${gap}`] : false,
+        isDefined(mb) ? styles[`mb_${mb}`] : false
       )}
     >
       {children}

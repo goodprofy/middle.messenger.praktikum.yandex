@@ -12,7 +12,7 @@ type Props = {
   checkValidity?: (validity: ValidityState, fieldName?: string) => void;
 } & InputProps;
 
-export class InputField extends Component<Props, {}> {
+export class InputField extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }

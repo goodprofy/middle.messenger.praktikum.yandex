@@ -1,7 +1,7 @@
 import { Component } from '../../../../class';
 import { Button, Form, ProfileRowEdit } from '../../../../components';
 import { PASSWORD_REG_EXP } from '../../../../constants';
-import { getInputErrorMessage } from '../../../../utils';
+import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type Fields = {
   oldPassword: string;
@@ -14,7 +14,7 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class ProfilePasswordForm extends Component<{}, State> {
+export class ProfilePasswordForm extends Component<null, State> {
   state: State = {
     fields: {
       confirmPassword: '',
@@ -35,7 +35,7 @@ export class ProfilePasswordForm extends Component<{}, State> {
   checkFormValidity = () => {};
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
-    if (!fieldName) {
+    if (!isDefined(fieldName)) {
       return;
     }
 

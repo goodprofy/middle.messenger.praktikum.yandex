@@ -45,14 +45,21 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
       }
     });
 
-    if (mountedElement.tagName === 'INPUT' && newElement.tagName === 'INPUT') {
-      const newInput = newElement as HTMLInputElement;
-      const mountedInput = mountedElement as HTMLInputElement;
-      if (mountedInput.value !== newInput.value) {
-        mountedInput.value = newInput.value;
-      }
-      if (mountedInput.type === 'checkbox' || mountedInput.type === 'radio') {
-        mountedInput.checked = newInput.checked;
+    const isInputElement =
+      (mountedElement.tagName === 'INPUT' && newElement.tagName === 'INPUT') ||
+      (mountedElement.tagName === 'TEXTAREA' && newElement.tagName === 'TEXTAREA');
+
+    if (isInputElement) {
+      const newInput = newElement as HTMLInputElement | HTMLTextAreaElement;
+      const mountedInput = mountedElement as HTMLInputElement | HTMLTextAreaElement;
+      if (newInput.type === 'text' || newInput.tagName === 'TEXTAREA') {
+        if (mountedInput.value !== newInput.value) {
+          mountedInput.value = newInput.value;
+        }
+      } else if (mountedInput instanceof HTMLInputElement && newInput instanceof HTMLInputElement) {
+        if (mountedInput.type === 'checkbox' || mountedInput.type === 'radio') {
+          mountedInput.checked = newInput.checked;
+        }
       }
     }
 

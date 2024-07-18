@@ -45,6 +45,17 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
       }
     });
 
+    if (mountedElement.tagName === 'INPUT' && newElement.tagName === 'INPUT') {
+      const newInput = newElement as HTMLInputElement;
+      const mountedInput = mountedElement as HTMLInputElement;
+      if (mountedInput.value !== newInput.value) {
+        mountedInput.value = newInput.value;
+      }
+      if (mountedInput.type === 'checkbox' || mountedInput.type === 'radio') {
+        mountedInput.checked = newInput.checked;
+      }
+    }
+
     const mountedExistingChildren = Array.from(mountedElement.childNodes);
     const newExistingChildren = Array.from(newElement.childNodes);
 

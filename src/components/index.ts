@@ -14,6 +14,7 @@ export * from './ProfileRowEdit';
 export * from './Search';
 export * from './Sidebar';
 export * from './Text';
-export * from './TextEditor';
+export * from './TextArea';
+export * from './TextareaField';
 export * from './TextError';
 export * from './Title';

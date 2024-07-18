@@ -1,5 +1,5 @@
 import { Component, eventBus } from '../../../../class';
-import { Button, Form, TextEditor } from '../../../../components';
+import { Button, Form, TextAreaField } from '../../../../components';
 import styles from './styles.module.scss';
 
 type State = {
@@ -16,7 +16,7 @@ export class MessageInput extends Component<{}, State> {
 
   onSubmit = () => {
     eventBus.emit('chat:send', this.state.message);
-    this.setState({ message: '' });
+    this.onChange('');
   };
 
   onAdd = () => {
@@ -30,7 +30,7 @@ export class MessageInput extends Component<{}, State> {
         <div className={styles.message_input}>
           <Button isFullWidth={false} title="Add" onClick={this.onAdd} />
           <div className={styles.text_editor}>
-            <TextEditor value={message} onChange={this.onChange} />
+            <TextAreaField name="message" value={message} onChange={this.onChange} label="Message" />
           </div>
           <Button isFullWidth={false} title="Send" type="submit" />
         </div>

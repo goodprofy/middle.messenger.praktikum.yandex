@@ -13,11 +13,10 @@ type Props = {
 } & InputProps;
 
 export class InputField extends Component<Props> {
+  ref: HTMLInputElement | null = null;
   constructor(props: Props) {
     super(props);
   }
-
-  ref: HTMLInputElement | null = null;
 
   onBlur = () => {
     if (this.props?.onBlur) {

@@ -5,13 +5,14 @@ type State = {
   messages: string[];
 };
 
-export class Messages extends Component<null, State> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class Messages extends Component<{}, State> {
   state: State = {
     messages: []
   };
 
   constructor() {
-    super(null);
+    super({});
     eventBus.on('chat:send', (message: string) => {
       this.setState({ messages: [...this.state.messages, message] });
     });

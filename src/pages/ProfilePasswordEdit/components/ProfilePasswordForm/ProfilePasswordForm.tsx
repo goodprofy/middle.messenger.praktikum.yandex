@@ -14,7 +14,8 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class ProfilePasswordForm extends Component<null, State> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class ProfilePasswordForm extends Component<{}, State> {
   state: State = {
     fields: {
       confirmPassword: '',

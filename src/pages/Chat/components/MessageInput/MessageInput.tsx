@@ -6,7 +6,8 @@ type State = {
   message: string;
 };
 
-export class MessageInput extends Component<null, State> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class MessageInput extends Component<{}, State> {
   state: State = { message: '' };
 
   onChange = (message: string) => {

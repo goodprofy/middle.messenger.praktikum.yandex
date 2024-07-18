@@ -1,19 +1,18 @@
 type SetStateCallback<S> = (state: S) => void;
 type Key = symbol | string;
-
-export class Component<P = Record<string, unknown>, S = Record<string, unknown>> {
+export class Component<Props = Record<string, unknown>, State = Record<string, unknown>> {
   key: Key;
-  props: P;
-  state: S;
-  element: HTMLUnknownElement | null = null;
+  props: Props;
+  state: State;
+  element: HTMLElement | null = null;
 
-  constructor(props: P, key?: Key) {
+  constructor(props: Props, key?: Key) {
     this.props = props;
-    this.state = {} as S;
+    this.state = {} as State;
     this.key = key ?? Math.random().toString(36).substring(2);
   }
 
-  protected setState(newState: Partial<S>, callback?: SetStateCallback<S>) {
+  protected setState(newState: Partial<State>, callback?: SetStateCallback<State>) {
     this.state = { ...this.state, ...newState };
     this.update();
     if (callback) {
@@ -34,6 +33,7 @@ export class Component<P = Record<string, unknown>, S = Record<string, unknown>>
 
   private updateElement(mountedElement: HTMLElement, newElement: HTMLElement) {
     const newAttrs = Array.from(newElement.attributes);
+
     newAttrs.forEach((attr) => {
       mountedElement.setAttribute(attr.name, attr.value);
     });

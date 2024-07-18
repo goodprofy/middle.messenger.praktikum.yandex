@@ -17,7 +17,8 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class SignUpForm extends Component<null, State> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class SignUpForm extends Component<{}, State> {
   state: State = {
     errors: {
       login: [],

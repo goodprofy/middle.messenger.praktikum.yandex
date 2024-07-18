@@ -10,7 +10,8 @@ type State = {
   errors: Record<keyof Fields, string[]>;
 };
 
-export class AvatarForm extends Component<null, State> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class AvatarForm extends Component<{}, State> {
   state: State = {
     errors: { avatar: [] }
   };

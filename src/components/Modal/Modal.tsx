@@ -1,5 +1,4 @@
 import { isDefined } from '../../utils';
-import { Portal } from '../Portal';
 import styles from './styles.module.scss';
 
 type Props = {
@@ -18,15 +17,13 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   title
 }) => {
   return (
-    <Portal>
-      <div className={styles.modal}>
-        <div className={styles.content}>
-          <h2 className={styles.header}>{title}</h2>
-          <div className={styles.body}>{children}</div>
-          {isDefined(buttons) && buttons.length > 0 ? <div className={styles.footer}>{children}</div> : null}
-        </div>
-        {shownBackdrop ? <div className={styles.backdrop} onClick={onBackdropClick} /> : null}
+    <div className={styles.modal}>
+      <div className={styles.content}>
+        <h2 className={styles.header}>{title}</h2>
+        <div className={styles.body}>{children}</div>
+        {isDefined(buttons) && buttons.length > 0 ? <div className={styles.footer}>{children}</div> : null}
       </div>
-    </Portal>
+      {shownBackdrop ? <div className={styles.backdrop} onClick={onBackdropClick} /> : null}
+    </div>
   );
 };

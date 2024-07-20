@@ -1,3 +1,4 @@
+import { client } from '../client';
 import { Profile } from '../types';
 
 const profile: Profile = {
@@ -10,5 +11,8 @@ const profile: Profile = {
 } as const;
 
 export function useUser() {
+  client.getCurrentUser().then(({ response }) => {
+    console.log(response);
+  });
   return profile;
 }

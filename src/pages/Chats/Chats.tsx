@@ -1,11 +1,11 @@
-import { Link, Search, Sidebar, Contacts } from '../../components';
+import { Contacts, Link, Search, Sidebar } from '../../components';
 import styles from './styles.module.scss';
 
 export const Chats: FC = () => {
   return (
     <div className={styles.chats}>
       <Sidebar>
-        <Link to="/profile" title="Profile" />
+        <Link to="/settings" title="Profile" />
         <Search />
         <Contacts />
       </Sidebar>

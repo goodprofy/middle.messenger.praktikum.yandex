@@ -1,20 +1,16 @@
 import { Route } from './Route';
-
-import { Mediator } from './Mediator';
 import { isDefined } from '../utils';
 
 export class Router {
   static __instance: Router;
   private routes: Route[] = [];
   public currentRoute: (typeof this.routes)[number] | undefined;
-  public mediator: Mediator | undefined;
   private history = window.history;
 
   constructor() {
     if (isDefined(Router.__instance)) {
       return Router.__instance;
     }
-    this.mediator = new Mediator();
     window.addEventListener('popstate', this.onLocationChange.bind(this));
     Router.__instance = this;
   }

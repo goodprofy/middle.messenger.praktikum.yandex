@@ -6,6 +6,7 @@ export * from './Form';
 export * from './Input';
 export * from './InputField';
 export * from './Link';
+export * from './Loading';
 export * from './Modal';
 export * from './Page';
 export * from './PageError';

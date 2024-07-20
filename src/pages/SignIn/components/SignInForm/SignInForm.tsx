@@ -1,15 +1,16 @@
 import { Component } from '../../../../class';
+import { type SignInData, client } from '../../../../client';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { LOGIN_REG_EXP, PASSWORD_REG_EXP } from '../../../../constants';
 import { getInputErrorMessage, isDefined } from '../../../../utils';
 
-type Fields = {
-  login: string;
-  password: string;
-};
+type InputFieldProps = ConstructorParameters<typeof InputField>[0];
+
+type Fields = SignInData;
 
 type State = {
   errors: Record<keyof Fields, string[]>;
+  fields: Fields;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -18,21 +19,21 @@ export class SignInForm extends Component<{}, State> {
     errors: {
       login: [],
       password: []
+    },
+    fields: {
+      login: '',
+      password: ''
     }
   };
 
   loginRef: HTMLInputElement | null = null;
   passwordRef: HTMLInputElement | null = null;
 
-  onFormSubmit = (values: Record<string, unknown>) => {
-    console.log(values);
-  };
-
-  checkFormValidity = (state: boolean) => {
-    if (!state) {
-      this.loginRef?.reportValidity();
-      this.passwordRef?.reportValidity();
-    }
+  onFormSubmit = () => {
+    const { fields } = this.state;
+    client.signIn(fields).then(() => {
+      console.log('Success');
+    });
   };
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
@@ -47,21 +48,28 @@ export class SignInForm extends Component<{}, State> {
     }
   };
 
-  public render() {
+  onInputChannge: InputFieldProps['onChange'] = (field, value) => {
+    this.setState({ fields: { ...this.state.fields, [field]: value } });
+  };
+
+  render() {
+    const { fields } = this.state;
     return (
-      <Form onSubmit={this.onFormSubmit} checkValidity={this.checkFormValidity}>
+      <Form onSubmit={this.onFormSubmit}>
         <InputField
           ref={(el) => {
             this.loginRef = el;
           }}
           name="login"
           type="text"
-          label="Логин"
+          label="Login"
           required
           minLength={3}
           maxLength={20}
           pattern={LOGIN_REG_EXP.source}
           checkValidity={this.checkInputValidity}
+          onChange={this.onInputChannge}
+          value={fields.login}
           errors={this.state.errors.login}
         />
         <InputField
@@ -70,16 +78,18 @@ export class SignInForm extends Component<{}, State> {
           }}
           name="password"
           type="password"
-          label="Пароль"
+          label="Password"
           required
           pattern={PASSWORD_REG_EXP.source}
           minLength={8}
           maxLength={40}
           checkValidity={this.checkInputValidity}
+          onChange={this.onInputChannge}
+          value={fields.password}
           errors={this.state.errors.password}
         />
-        <Button type="submit" title="Авторизоваться" />
-        <Link to={'/sign-up'} title="Нет аккаунта?" />
+        <Button type="submit" title="Sign In" />
+        <Link to={'/sign-up'} title="Don't have an account?" />
       </Form>
     );
   }

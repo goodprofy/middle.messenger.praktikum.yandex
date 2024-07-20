@@ -10,7 +10,8 @@ type Props = {
   label: string;
   errors?: string[];
   checkValidity?: (validity: ValidityState, fieldName?: string) => void;
-} & InputProps;
+  onChange: (field: string, value: Parameters<Required<InputProps>['onChange']>[0]) => void;
+} & Omit<InputProps, 'onChange'>;
 
 export class InputField extends Component<Props> {
   ref: HTMLInputElement | null = null;
@@ -18,7 +19,7 @@ export class InputField extends Component<Props> {
     super(props);
   }
 
-  onBlur = () => {
+  onInputBlur = () => {
     if (this.props?.onBlur) {
       this.props.onBlur();
     }
@@ -31,6 +32,10 @@ export class InputField extends Component<Props> {
     if (this.props.checkValidity) {
       this.props.checkValidity(input.validity, this.props.name);
     }
+  };
+
+  onInputChange = (value: InputProps['value']) => {
+    this.props.onChange(this.props.name, value);
   };
 
   render() {
@@ -46,7 +51,8 @@ export class InputField extends Component<Props> {
             ref={(el) => {
               this.ref = el;
             }}
-            onBlur={this.onBlur}
+            onBlur={this.onInputBlur}
+            onChange={this.onInputChange}
             name={name}
           />
         </div>

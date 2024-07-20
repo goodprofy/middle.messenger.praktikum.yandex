@@ -1,10 +1,17 @@
+import { client } from '../../client';
 import { AvatarProfile, Flex, Link, Title } from '../../components';
-import { useUser } from '../../hooks';
+import { useRouter, useUser } from '../../hooks';
 import { ProfileRow } from './components';
 import styles from './styles.module.scss';
 
 export const Profile = () => {
   const profile = useUser();
+  const router = useRouter();
+  const onLogoutClick = () => {
+    client.logout().then(() => {
+      router.navigate('/');
+    });
+  };
   return (
     <div className={styles.profile}>
       <Flex gap={1} isCenter isColumn>
@@ -22,9 +29,9 @@ export const Profile = () => {
       </div>
 
       <div>
-        <ProfileRow name={<Link to="/profile/edit" title="Изменить данные" />} />
-        <ProfileRow name={<Link to="/profile/password" title="Изменить пароль" />} />
-        <ProfileRow name={<Link to="/" title="Выйти" isError />} />
+        <ProfileRow name={<Link to="/settings/edit" title="Изменить данные" />} />
+        <ProfileRow name={<Link to="/settings/password" title="Изменить пароль" />} />
+        <ProfileRow name={<Link onClick={onLogoutClick} title="Выйти" isError />} />
       </div>
     </div>
   );

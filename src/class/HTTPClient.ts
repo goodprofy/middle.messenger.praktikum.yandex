@@ -1,4 +1,4 @@
-import { isDefined } from '../utils';
+import { isDefined, queryStringify } from '../utils';
 
 const METHODS = {
   GET: 'GET',
@@ -16,37 +16,28 @@ export type RequestOptions = {
   timeout?: number;
 };
 
-function queryStringify(data: Record<string, unknown>): string {
-  if (typeof data !== 'object') {
-    throw new Error('Data must be an object');
-  }
-
-  const keys = Object.keys(data);
-  return keys.reduce((result, key, index) => {
-    return `${result}${key}=${encodeURIComponent(String(data[key]))}${index < keys.length - 1 ? '&' : ''}`;
-  }, '?');
-}
-
-type HTTPFn = (url: string, options: RequestOptions) => Promise<XMLHttpRequest>;
+type Response<T> = Promise<{ response: T | { ok: true } }>;
 
 export class HTTPClient {
-  get: HTTPFn = (url, options = {}) => {
-    return this.request(url, { ...options, method: METHODS.GET });
-  };
+  constructor(private baseUrl: `https://${string}`) {}
 
-  post: HTTPFn = (url, options) => {
+  protected get<T>(url: string, options: RequestOptions): Response<T> {
+    return this.request<T>(url, { ...options, method: METHODS.GET });
+  }
+
+  protected post<T>(url: string, options: RequestOptions): Response<T> {
     return this.request(url, { ...options, method: METHODS.POST });
-  };
+  }
 
-  put: HTTPFn = (url, options) => {
+  protected put<T>(url: string, options: RequestOptions): Response<T> {
     return this.request(url, { ...options, method: METHODS.PUT });
-  };
+  }
 
-  delete: HTTPFn = (url, options) => {
+  protected delete<T>(url: string, options: RequestOptions): Response<T> {
     return this.request(url, { ...options, method: METHODS.DELETE });
-  };
+  }
 
-  request: HTTPFn = (url, options, timeout: number = 5000) => {
+  private request<T>(url: string, options: RequestOptions, timeout: number = 5000): Response<T> {
     const { headers = {}, method, data } = options;
     return new Promise((resolve, reject) => {
       if (!isDefined(method)) {
@@ -56,18 +47,38 @@ export class HTTPClient {
 
       const xhr = new XMLHttpRequest();
       const isGet = method === METHODS.GET;
+      const fullUrl = this.baseUrl + url;
 
-      xhr.open(method, isGet && data ? `${url}${queryStringify(data)}` : url);
+      xhr.open(method, isGet && data ? `${fullUrl}${queryStringify(data)}` : fullUrl);
 
-      Object.keys(headers).forEach((key) => {
+      const headerKeys = Object.keys(headers);
+      headerKeys.forEach((key) => {
         const headerProp = headers[key];
         if (isDefined(headerProp)) {
           xhr.setRequestHeader(key, headerProp);
         }
       });
 
+      if (!isGet && !headerKeys.includes('Content-Type')) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+      }
+
       xhr.onload = function () {
-        resolve(xhr);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            console.log(xhr);
+            if (xhr.response === 'OK') {
+              resolve({ response: { ok: true } });
+            } else {
+              const parsedResponse = xhr.responseText.length > 0 ? JSON.parse(xhr.responseText) : null;
+              resolve({ response: parsedResponse });
+            }
+          } catch (error) {
+            reject(new Error(`Error parsing response: ${error}`));
+          }
+        } else {
+          reject(new Error(`The request failed: ${xhr.status} ${xhr.statusText}`));
+        }
       };
 
       xhr.onabort = () => reject(new Error('Request aborted'));
@@ -76,11 +87,13 @@ export class HTTPClient {
 
       xhr.timeout = timeout;
 
+      xhr.withCredentials = true;
+
       if (isGet || !data) {
         xhr.send();
       } else {
         xhr.send(JSON.stringify(data));
       }
     });
-  };
+  }
 }

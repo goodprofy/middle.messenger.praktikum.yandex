@@ -16,7 +16,7 @@ export type RequestOptions = {
   timeout?: number;
 };
 
-type Response<T> = Promise<{ response: T | { ok: true } }>;
+type Response<T> = Promise<{ response: T }>;
 
 export class HTTPClient {
   constructor(private baseUrl: `https://${string}`) {}
@@ -68,7 +68,7 @@ export class HTTPClient {
           try {
             console.log(xhr);
             if (xhr.response === 'OK') {
-              resolve({ response: { ok: true } });
+              resolve({ response: { ok: true } as T });
             } else {
               const parsedResponse = xhr.responseText.length > 0 ? JSON.parse(xhr.responseText) : null;
               resolve({ response: parsedResponse });

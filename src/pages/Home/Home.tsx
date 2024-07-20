@@ -11,22 +11,22 @@ export const Home: FC = () => {
           <Link to={'/sign-up'} title="Регистрация" />
         </li>
         <li>
-          <Link to={'/chats'} title="Чаты" />
+          <Link to={'/messenger'} title="Чаты" />
         </li>
         <li>
-          <Link to={'/chat'} title="Чат" />
+          <Link to={'/messenger/:id'} title="Чат" />
         </li>
         <li>
-          <Link to={'/profile/avatar'} title="Редактировать аватар" />
+          <Link to={'/settings/avatar'} title="Редактировать аватар" />
         </li>
         <li>
-          <Link to={'/profile/password'} title="Редактировать пароль" />
+          <Link to={'/settings/password'} title="Редактировать пароль" />
         </li>
         <li>
-          <Link to={'/profile/edit'} title="Редактировать профайл" />
+          <Link to={'/settings/edit'} title="Редактировать профайл" />
         </li>
         <li>
-          <Link to={'/profile'} title="Профайл" />
+          <Link to={'/settings'} title="Профайл" />
         </li>
         <li>
           <Link to={'/400'} title="400" />

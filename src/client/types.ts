@@ -56,3 +56,11 @@ export type ChatToken = {
   token: string;
 };
 export type GetChatTokenPayload = ChatToken;
+
+export type UpdateUserParams = Pick<User, 'first_name' | 'second_name' | 'display_name' | 'login' | 'email' | 'phone'>;
+export type UpdateUserAvatarParams = { avatar: File };
+export type UpdateUserPasswordParams = {
+  oldPassword: string;
+  newPassword: string;
+};
+export type GetUserByLoginParams = Pick<User, 'login'>;

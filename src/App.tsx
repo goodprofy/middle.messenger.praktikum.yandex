@@ -4,7 +4,6 @@ import {
   AvatarEdit,
   Chat,
   Chats,
-  Home,
   NotFound,
   Profile,
   ProfileEdit,
@@ -21,7 +20,7 @@ const router = new Router();
 router
   .use('/', () => (
     <LayoutPublic>
-      <Home />
+      <SignIn />
     </LayoutPublic>
   ))
   .use('/sign-in', () => (

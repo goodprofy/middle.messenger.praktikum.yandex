@@ -46,9 +46,13 @@ export class HTTPClient {
         return;
       }
 
-      const xhr = new XMLHttpRequest();
       const isGet = method === METHODS.GET;
       const fullUrl = this.baseUrl + url;
+      const signInUrl = '/sign-in';
+
+      const xhr = new XMLHttpRequest();
+      xhr.timeout = timeout;
+      xhr.withCredentials = true;
 
       xhr.open(method, isGet && data ? `${fullUrl}${queryStringify(data)}` : fullUrl);
 
@@ -76,6 +80,8 @@ export class HTTPClient {
           } catch (error) {
             reject(new Error(`Error parsing response: ${error}`));
           }
+        } else if (xhr.status == 401) {
+          window.location.href = signInUrl;
         } else {
           reject(new Error(`The request failed: ${xhr.status} ${xhr.statusText}`));
         }
@@ -85,19 +91,13 @@ export class HTTPClient {
       xhr.onerror = () => reject(new Error('Network error'));
       xhr.ontimeout = () => reject(new Error('Request timed out'));
 
-      xhr.timeout = timeout;
-
-      xhr.withCredentials = true;
-
       if (isGet || !data) {
         xhr.send();
       } else if (isMultipart) {
         const formData = new FormData();
-
         Object.entries(data).forEach(([field, value]) => {
           formData.append(field, value as Blob);
         });
-
         xhr.send(formData);
       } else {
         xhr.send(JSON.stringify(data));

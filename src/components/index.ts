@@ -14,7 +14,7 @@ export * from './PageError';
 export * from './Portal';
 export * from './ProfileRowEdit';
 export * from './Search';
-export * from './Sidebar';
+export * from './MessengerSidebar';
 export * from './Text';
 export * from './TextArea';
 export * from './TextareaField';

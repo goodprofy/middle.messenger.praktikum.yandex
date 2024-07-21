@@ -3,7 +3,7 @@ import { SignUpForm } from './components';
 
 export const SignUp = () => {
   return (
-    <Modal title="Регистрация" shownBackdrop={false}>
+    <Modal title="Registration" shownBackdrop={false}>
       <SignUpForm />
     </Modal>
   );

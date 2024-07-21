@@ -2,6 +2,7 @@ import { Component } from '../../../../class';
 import { type SignInData, client } from '../../../../client';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { LOGIN_REG_EXP, PASSWORD_REG_EXP } from '../../../../constants';
+import { useRouter } from '../../../../hooks';
 import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type InputFieldProps = ConstructorParameters<typeof InputField>[0];
@@ -32,7 +33,8 @@ export class SignInForm extends Component<{}, State> {
   onFormSubmit = () => {
     const { fields } = this.state;
     client.signIn(fields).then(() => {
-      console.log('Success');
+      const { navigate } = useRouter();
+      navigate('/messenger');
     });
   };
 

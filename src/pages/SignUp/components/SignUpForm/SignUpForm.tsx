@@ -2,6 +2,7 @@ import { Component } from '../../../../class';
 import { client } from '../../../../client';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PASSWORD_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
+import { useRouter } from '../../../../hooks';
 import { getInputErrorMessage, isDefined } from '../../../../utils';
 
 type InputFieldProps = ConstructorParameters<typeof InputField>[0];
@@ -50,7 +51,10 @@ export class SignUpForm extends Component<{}, State> {
     client.signUp(this.state.fields).then(({ response: { id } }) => {
       if (id !== 0) {
         const { login, password } = this.state.fields;
-        client.signIn({ login, password }).then(() => {});
+        client.signIn({ login, password }).then(() => {
+          const { navigate } = useRouter();
+          navigate('/messenger');
+        });
       }
     });
   };

@@ -1,13 +1,28 @@
 import styles from './styles.module.scss';
-import { InputType, PropsBaseInput, PropsNumberInput, PropsTextInput } from './types';
+import { InputType } from './types';
 
-type Props<T extends InputType> = T extends 'number'
+export type Props = {
+  max?: number;
+  min?: number;
+  name: string;
+  onBlur?: () => void;
+  onChange: (value: string | number) => void;
+  onFocus?: () => void;
+  readOnly?: boolean;
+  required?: boolean;
+  type: InputType;
+  value?: string | number;
+  ref?: (el: HTMLInputElement) => void;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+};
+
+/* type Props<T extends InputType> = T extends 'number'
   ? PropsBaseInput<T, PropsNumberInput>
-  : T extends 'text' | 'email' | 'password' | 'tel' | 'search'
-    ? PropsBaseInput<T, PropsTextInput>
-    : never;
+  : PropsBaseInput<T, PropsTextInput>; */
 
-export const Input = <T extends InputType>({
+export const Input = ({
   max,
   min,
   name,
@@ -22,16 +37,14 @@ export const Input = <T extends InputType>({
   maxLength,
   minLength,
   pattern
-}: Props<T>) => {
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      const { value } = event.target;
+}: Props) => {
+  const onInputChange = (event: Event) => {
+    const { value, valueAsNumber } = event.target as HTMLInputElement;
 
-      if (type === 'number') {
-        onChange(Number(value));
-      } else {
-        onChange(String(value));
-      }
+    if (type === 'number') {
+      onChange(valueAsNumber);
+    } else {
+      onChange(value);
     }
   };
 

@@ -1,7 +1,4 @@
 import { Component, Router } from './class';
-import { NotFound } from './pages';
-import { Public as LayoutPublic } from './layout';
-import { isDefined } from './utils';
 
 type Props = {
   router: Router;
@@ -20,23 +17,30 @@ export class Navigator extends Component<Props, State> {
     super(props);
 
     //вместо медиатора
-    document.addEventListener('routechange', (event) => {
-      this.setState({ currentRoute: event.detail });
+    document.addEventListener('routechange', (event: Event) => {
+      const newPage = (event as CustomEvent<HTMLElement>).detail;
+
+      const rootNode = document.getElementById('root');
+      if (rootNode) {
+        this.replacePage(rootNode, newPage);
+        this.setState({ currentRoute: newPage });
+      }
     });
 
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
 
-  render() {
-    const { currentRoute } = this.state;
-    if (!isDefined(currentRoute)) {
-      return (
-        <LayoutPublic>
-          <NotFound />
-        </LayoutPublic>
-      );
+  //костыль, решает проблему потери parentNode
+  replacePage(rootElement: Node, newComponent: HTMLElement) {
+    while (rootElement.firstChild) {
+      rootElement.removeChild(rootElement.firstChild);
     }
 
-    return currentRoute;
+    rootElement.appendChild(newComponent);
+  }
+
+  render() {
+    //нужно возвращать currentRoute, но есть проблемы с шаблонизатором.
+    return null;
   }
 }

@@ -1,4 +1,5 @@
 .avatar_profile {
+  display: flex;
   width: 130px;
   height: 130px;
   border-radius: 100%;
@@ -6,7 +7,16 @@
   color: #efefef;
 }
 
-.avatar_empty {
-  width: 40px;
-  height: 40px;
+.avatar_change {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.5s;
+  will-change: opacity;
+}
+
+.avatar_profile:hover .avatar_change {
+  opacity: 1;
 }

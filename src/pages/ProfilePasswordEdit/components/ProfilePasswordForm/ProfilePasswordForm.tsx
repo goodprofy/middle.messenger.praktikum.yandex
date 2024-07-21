@@ -1,36 +1,53 @@
 import { Component } from '../../../../class';
-import { Button, Form, ProfileRowEdit } from '../../../../components';
+import { UpdateUserPasswordParams, client } from '../../../../client';
+import { Button, Form, InputField, ProfileRowEdit } from '../../../../components';
 import { PASSWORD_REG_EXP } from '../../../../constants';
+import { useRouter } from '../../../../hooks';
 import { getInputErrorMessage, isDefined } from '../../../../utils';
 
+type InputFieldProps = ConstructorParameters<typeof InputField>[0];
+
 type Fields = {
-  oldPassword: string;
-  newPassword: string;
   confirmPassword: string;
-};
+} & UpdateUserPasswordParams;
 
 type State = {
-  fields: Record<keyof Fields, string>;
+  fields: Fields;
   errors: Record<keyof Fields, string[]>;
+  isSubmitting: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class ProfilePasswordForm extends Component<{}, State> {
   state: State = {
+    errors: {
+      oldPassword: [],
+      newPassword: [],
+      confirmPassword: []
+    },
     fields: {
       confirmPassword: '',
       newPassword: '',
       oldPassword: ''
     },
-    errors: {
-      oldPassword: [],
-      newPassword: [],
-      confirmPassword: []
-    }
+    isSubmitting: false
   };
 
-  onFormSubmit = (values: Record<string, unknown>) => {
-    console.log(values);
+  onInputChannge: InputFieldProps['onChange'] = (field, value) => {
+    this.setState({ fields: { ...this.state.fields, [field]: value } });
+  };
+
+  onFormSubmit = () => {
+    this.setState({ isSubmitting: true });
+    client
+      .updateUserPassword(this.state.fields)
+      .then(() => {
+        const { navigate } = useRouter();
+        navigate('/settings');
+      })
+      .finally(() => {
+        this.setState({ isSubmitting: false });
+      });
   };
 
   checkFormValidity = () => {};
@@ -50,14 +67,15 @@ export class ProfilePasswordForm extends Component<{}, State> {
   public render() {
     const {
       errors,
-      fields: { confirmPassword, newPassword, oldPassword }
+      fields: { confirmPassword, newPassword, oldPassword },
+      isSubmitting
     } = this.state;
     return (
       <Form onSubmit={this.onFormSubmit} checkValidity={this.checkFormValidity}>
         <div>
           <ProfileRowEdit
             name="oldPassword"
-            title="Старый пароль"
+            title="Old password"
             value={oldPassword}
             type="password"
             pattern={PASSWORD_REG_EXP.source}
@@ -65,11 +83,12 @@ export class ProfilePasswordForm extends Component<{}, State> {
             maxLength={40}
             errors={errors.oldPassword}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="newPassword"
-            title="Новый пароль"
+            title="New password"
             value={newPassword}
             type="password"
             pattern={PASSWORD_REG_EXP.source}
@@ -77,11 +96,12 @@ export class ProfilePasswordForm extends Component<{}, State> {
             maxLength={40}
             errors={errors.newPassword}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="confirmPassword"
-            title="Повторите новый пароль"
+            title="Confirm password"
             value={confirmPassword}
             type="password"
             pattern={PASSWORD_REG_EXP.source}
@@ -89,10 +109,11 @@ export class ProfilePasswordForm extends Component<{}, State> {
             maxLength={40}
             errors={errors.confirmPassword}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
         </div>
-        <Button title="Сохранить" type="submit" />
+        <Button title={isSubmitting ? 'Submitting...' : 'Save'} type="submit" />
       </Form>
     );
   }

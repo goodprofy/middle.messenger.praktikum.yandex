@@ -7,7 +7,7 @@ type ComponentConstructor = new (props: { [key: string]: any; children: any[] })
 
 export function h(
   tag: keyof HTMLElementTagNameMap | Function,
-  props: { [key: string]: any; key?: string },
+  props: { [key: string]: any },
   ...children: any[]
 ): HTMLElement | null {
   if (typeof tag === 'function') {
@@ -31,7 +31,7 @@ export function h(
   Object.entries(props || {}).forEach(([key, value]) => {
     if (key === 'ref' && typeof value === 'function') {
       value(element);
-    } else if (key.startsWith('on') && typeof value === 'function' && key.toLowerCase() in window) {
+    } else if (key.startsWith('on') && typeof value === 'function') {
       if (key.toLowerCase() === 'onchange') {
         element.addEventListener('input', props[key]);
       } else {
@@ -44,21 +44,13 @@ export function h(
     }
   });
 
-  const appendChild = (child: Node | Node[]) => {
-    if (typeof child === 'string' || typeof child === 'number') {
-      element.appendChild(document.createTextNode(String(child)));
-    } else if (child instanceof Node) {
-      element.appendChild(child);
-    } else if (Array.isArray(child)) {
-      child.forEach(appendChild);
-    }
-  };
-
   while (element.firstChild) {
-    element.removeChild(element.firstChild);
+    element.firstChild.remove();
   }
 
-  children.flat().forEach(appendChild);
+  children.flat().forEach((child: Node | Node[]) => {
+    appendChild(element, child);
+  });
 
   return element;
 }
@@ -66,11 +58,19 @@ export function h(
 export function Fragment(props: { children: any[] }) {
   const fragment = document.createDocumentFragment();
   props.children.flat().forEach((child) => {
-    if (typeof child === 'string' || typeof child === 'number') {
-      fragment.appendChild(document.createTextNode(String(child)));
-    } else if (child instanceof Node) {
-      fragment.appendChild(child);
-    }
+    appendChild(fragment, child);
   });
   return fragment;
+}
+
+function appendChild(parent: HTMLElement | DocumentFragment, child: Node | Node[]) {
+  if (typeof child === 'string' || typeof child === 'number') {
+    parent.append(document.createTextNode(String(child)));
+  } else if (child instanceof Node) {
+    parent.append(child);
+  } else if (Array.isArray(child)) {
+    child.forEach((childOfChild) => {
+      appendChild(parent, childOfChild);
+    });
+  }
 }

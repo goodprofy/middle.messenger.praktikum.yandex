@@ -16,7 +16,7 @@ export const Search: FC = () => {
 
   return (
     <label id={id} className={styles.search}>
-      <Input value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} />
+      <Input name="search" value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} />
       <span className={styles.label}>Поиск</span>
     </label>
   );

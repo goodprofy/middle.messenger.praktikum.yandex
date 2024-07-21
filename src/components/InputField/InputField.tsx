@@ -9,9 +9,11 @@ type InputProps = ComponentProps<typeof Input>;
 type Props = {
   label: string;
   errors?: string[];
-  checkValidity?: (validity: ValidityState, fieldName?: string) => void;
+  checkValidity?: (validity: ValidityState, field?: string) => void;
   onChange: (field: string, value: Parameters<Required<InputProps>['onChange']>[0]) => void;
-} & Omit<InputProps, 'onChange'>;
+  type: Exclude<InputProps['type'], 'number'>;
+  value: string;
+} & Omit<InputProps, 'onChange' | 'type' | 'value'>;
 
 export class InputField extends Component<Props> {
   ref: HTMLInputElement | null = null;
@@ -33,13 +35,12 @@ export class InputField extends Component<Props> {
       this.props.checkValidity(input.validity, this.props.name);
     }
   };
-
-  onInputChange = (value: InputProps['value']) => {
+  onInputChange = (value: string | number) => {
     this.props.onChange(this.props.name, value);
   };
 
   render() {
-    const { label, errors = [], name, ...inputRest } = this.props;
+    const { label, errors = [], name, type, value, ...inputRest } = this.props;
     const hasErrors = errors.length > 0;
 
     return (
@@ -51,6 +52,8 @@ export class InputField extends Component<Props> {
             ref={(el) => {
               this.ref = el;
             }}
+            type={type}
+            value={value}
             onBlur={this.onInputBlur}
             onChange={this.onInputChange}
             name={name}

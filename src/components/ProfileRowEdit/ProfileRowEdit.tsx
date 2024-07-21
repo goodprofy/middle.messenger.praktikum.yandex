@@ -8,11 +8,10 @@ type InputProps = ComponentProps<typeof Input>;
 
 type Props = {
   title: string;
-  /** @default text */
-  type?: 'text' | 'password' | 'email' | 'tel';
   errors?: string[];
   checkValidity?: (validity: ValidityState, fieldName?: string) => void;
-} & InputProps;
+  onChange: (field: string, value: string | number) => void;
+} & Omit<InputProps, 'onChange'>;
 
 export class ProfileRowEdit extends Component<Props> {
   constructor(props: Props) {
@@ -21,7 +20,7 @@ export class ProfileRowEdit extends Component<Props> {
 
   ref: HTMLInputElement | null = null;
 
-  onBlur = () => {
+  onInputBlur = () => {
     if (this.props?.onBlur) {
       this.props.onBlur();
     }
@@ -33,6 +32,12 @@ export class ProfileRowEdit extends Component<Props> {
 
     if (this.props.checkValidity) {
       this.props.checkValidity(input.validity, this.props.name);
+    }
+  };
+
+  onInputChannge = (value: string | number) => {
+    if (isDefined(this.props.onChange)) {
+      this.props.onChange(this.props.name, value);
     }
   };
 
@@ -48,7 +53,8 @@ export class ProfileRowEdit extends Component<Props> {
               this.ref = el;
             }}
             type={type}
-            onBlur={this.onBlur}
+            onBlur={this.onInputBlur}
+            onChange={this.onInputChannge}
           />
         </label>
         {isDefined(errors) && errors.length > 0 ? <TextError>{errors.join('. ')}</TextError> : null}

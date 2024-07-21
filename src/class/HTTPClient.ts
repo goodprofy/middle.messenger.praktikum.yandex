@@ -14,6 +14,7 @@ export type RequestOptions = {
   method?: Method;
   data?: Record<string, unknown>;
   timeout?: number;
+  isMultipart?: boolean;
 };
 
 type Response<T> = Promise<{ response: T }>;
@@ -38,7 +39,7 @@ export class HTTPClient {
   }
 
   private request<T>(url: string, options: RequestOptions, timeout: number = 5000): Response<T> {
-    const { headers = {}, method, data } = options;
+    const { headers = {}, method, data, isMultipart = false } = options;
     return new Promise((resolve, reject) => {
       if (!isDefined(method)) {
         reject(new Error('No method'));
@@ -59,7 +60,7 @@ export class HTTPClient {
         }
       });
 
-      if (!isGet && !headerKeys.includes('Content-Type')) {
+      if (!isGet && !headerKeys.includes('Content-Type') && !isMultipart) {
         xhr.setRequestHeader('Content-Type', 'application/json');
       }
 
@@ -90,6 +91,14 @@ export class HTTPClient {
 
       if (isGet || !data) {
         xhr.send();
+      } else if (isMultipart) {
+        const formData = new FormData();
+
+        Object.entries(data).forEach(([field, value]) => {
+          formData.append(field, value as Blob);
+        });
+
+        xhr.send(formData);
       } else {
         xhr.send(JSON.stringify(data));
       }

@@ -11,19 +11,21 @@ export class Router {
     if (isDefined(Router.__instance)) {
       return Router.__instance;
     }
-    window.addEventListener('popstate', this.onLocationChange.bind(this));
     Router.__instance = this;
   }
 
-  public use(pathname: Route['pathname'], component: Route['component']) {
+  public use = (pathname: Route['pathname'], component: Route['component']) => {
     const route = new Route(pathname, component);
     this.routes.push(route);
     return this;
-  }
+  };
 
-  public start() {
+  public start = () => {
+    window.addEventListener('popstate', () => {
+      this.onLocationChange();
+    });
     this.onLocationChange();
-  }
+  };
 
   private onLocationChange = () => {
     const { pathname } = window.location;
@@ -40,16 +42,16 @@ export class Router {
     return this.routes.find((route) => route.match(pathname));
   }
 
-  public navigate(path: string) {
-    window.history.pushState({}, '', path);
+  public navigate = (path: string) => {
+    this.history.pushState({}, '', path);
     this.onLocationChange();
-  }
+  };
 
-  public back() {
+  public back = () => {
     this.history.back();
-  }
+  };
 
-  public forward() {
+  public forward = () => {
     this.history.forward();
-  }
+  };
 }

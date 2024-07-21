@@ -12,7 +12,7 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
     this.state = {} as State;
   }
 
-  protected setState(newState: Partial<State>, callback?: SetStateCallback<State>) {
+  protected setState = (newState: Partial<State>, callback?: SetStateCallback<State>) => {
     const prevState = { ...this.state };
     this.state = { ...this.state, ...newState };
 
@@ -24,7 +24,7 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
     if (callback) {
       callback(this.state);
     }
-  }
+  };
 
   protected update() {
     const oldElement = this.element;

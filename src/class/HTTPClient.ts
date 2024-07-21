@@ -54,7 +54,7 @@ export class HTTPClient {
       xhr.timeout = timeout;
       xhr.withCredentials = true;
 
-      xhr.open(method, isGet && data ? `${fullUrl}${queryStringify(data)}` : fullUrl);
+      xhr.open(method, isGet && data ? `${fullUrl}?${queryStringify(data)}` : fullUrl);
 
       const headerKeys = Object.keys(headers);
       headerKeys.forEach((key) => {

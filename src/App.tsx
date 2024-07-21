@@ -3,7 +3,7 @@ import { Chat as LayoutChat, Public as LayoutPublic, User as LayoutUser } from '
 import {
   AvatarEdit,
   Chat,
-  Chats,
+  Messenger,
   NotFound,
   Profile,
   ProfileEdit,
@@ -35,7 +35,7 @@ router
   ))
   .use('/messenger', () => (
     <LayoutChat>
-      <Chats />
+      <Messenger />
     </LayoutChat>
   ))
   .use('/messenger/:id', () => (

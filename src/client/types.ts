@@ -39,7 +39,7 @@ export type Chat = {
   avatar: string;
   unread_count: number;
   created_by: User['id'];
-  last_message: Message;
+  last_message?: Message;
 };
 
 export type ChatsParams = { offset: number; limit: number; title?: string };

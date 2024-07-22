@@ -1,7 +1,7 @@
 import { Component } from '../../../../class';
 import { Button, Form, Modal, TextAreaField } from '../../../../components';
 import { useRouter } from '../../../../hooks';
-import { isDefined } from '../../../../utils';
+import { isDefined, trim } from '../../../../utils';
 import { AddUserForm } from '../AddUserForm';
 import styles from './styles.module.scss';
 
@@ -18,6 +18,7 @@ type State = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class MessageInput extends Component<Props, State> {
   state: State = { message: '', shownAddUserModal: false };
+  formRef: HTMLFormElement | null = null;
   constructor(props: Props) {
     super(props);
   }
@@ -33,8 +34,11 @@ export class MessageInput extends Component<Props, State> {
   };
 
   onFormSubmit = () => {
-    this.props.onSubmit(this.state.message);
-    this.onTextAreaChange('');
+    const message = trim(this.state.message);
+    if (message.length > 0) {
+      this.props.onSubmit(message);
+      this.onTextAreaChange('');
+    }
   };
 
   onUserAddClick = () => {

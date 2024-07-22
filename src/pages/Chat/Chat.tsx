@@ -28,11 +28,11 @@ export class Chat extends Component<{}, State> {
       offset: 0
     };
 
-    this.getChatTocken();
+    this.getChatToken();
     this.getChatUsers();
   }
 
-  getChatTocken = () => {
+  getChatToken = () => {
     const store = useStore();
     const { user } = store.getState<{ user: User }>();
     const { chatId } = this.state;

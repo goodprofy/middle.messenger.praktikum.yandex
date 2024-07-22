@@ -1,5 +1,7 @@
 # Warcraft Messenger 💬
 
+Очень сильно лагает шаблонизатор. Часто не обновляет DOM корректно.
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/72ecce6c-c201-4db6-b504-4b62458ad995/deploy-status)](https://app.netlify.com/sites/warcraft-messenger/deploys)
 
 Current version of the UI

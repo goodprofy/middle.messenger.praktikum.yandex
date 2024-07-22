@@ -16,7 +16,7 @@ export const ChatsItem: FC<Props> = ({ avatar, id, last_message, title, unread_c
   };
   return (
     <div className={styles.contact} onClick={onChatClick}>
-      <Avatar src={avatar} userName={title} />
+      <Avatar src={avatar} alt={title} />
       <div className={styles.info}>
         <div classList={styles.row}>
           <span className={styles.user_name}>{title}</span>

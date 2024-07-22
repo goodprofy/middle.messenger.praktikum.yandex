@@ -45,12 +45,11 @@ export class AddUserForm extends Component<Props, State> {
         <InputField
           name="usersStr"
           type="text"
-          label="ID user"
+          label="User ID"
           onChange={this.onInputChange}
           value={fields.usersStr}
           errors={errors.usersStr}
           required
-          minLength={3}
         />
         <Button title={isSubmitting ? 'Submitting...' : 'Add'} type="submit" />
       </Form>

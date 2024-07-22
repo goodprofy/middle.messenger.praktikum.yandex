@@ -33,12 +33,12 @@ export class Chat extends Component<{}, State> {
   }
 
   getChatToken = () => {
-    const store = useStore();
-    const { user } = store.getState<{ user: User }>();
     const { chatId } = this.state;
     client
       .getChatToken({ id: chatId })
       .then(({ token }) => {
+        const store = useStore();
+        const { user } = store.getState<{ user: User }>();
         const socket = new Socket(`chats/${user.id}/${this.state.chatId}/${token}`);
         this.setState({ socket });
       })
@@ -71,6 +71,10 @@ export class Chat extends Component<{}, State> {
     this.getChatUsers();
   };
 
+  onUserAddSuccess = () => {
+    this.getChatUsers();
+  };
+
   render() {
     const { socket, chatId, users } = this.state;
     return (
@@ -80,7 +84,7 @@ export class Chat extends Component<{}, State> {
           <div className={styles.messages}>
             {socket ? <Messages socket={socket} onUserConnected={this.onUserConnected} /> : 'Loading...'}
           </div>
-          <MessageInput onSubmit={this.onMessageSubmit} chatId={chatId} />
+          <MessageInput onSubmit={this.onMessageSubmit} onUserAddSuccess={this.onUserAddSuccess} chatId={chatId} />
         </div>
       </div>
     );

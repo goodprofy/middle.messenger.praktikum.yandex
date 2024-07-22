@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 
 type Props = {
   onSubmit: (message: string) => void;
+  onUserAddSuccess: () => void;
   chatId: number | undefined;
 };
 
@@ -51,6 +52,7 @@ export class MessageInput extends Component<Props, State> {
 
   onAddUserFormSuccess = () => {
     this.setState({ shownAddUserModal: false });
+    this.props.onUserAddSuccess();
   };
 
   public render() {

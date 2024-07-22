@@ -50,11 +50,8 @@ export class SignUpForm extends Component<{}, State> {
   onFormSubmit = () => {
     client.signUp(this.state.fields).then(({ response: { id } }) => {
       if (id !== 0) {
-        const { login, password } = this.state.fields;
-        client.signIn({ login, password }).then(() => {
-          const { navigate } = useRouter();
-          navigate('/messenger');
-        });
+        const { navigate } = useRouter();
+        navigate('/messenger');
       }
     });
   };

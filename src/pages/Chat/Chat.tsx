@@ -24,7 +24,7 @@ export class Chat extends Component<{}, State> {
       socket: undefined,
       chatId: chatId,
       users: [],
-      limit: 10,
+      limit: 100,
       offset: 0
     };
 

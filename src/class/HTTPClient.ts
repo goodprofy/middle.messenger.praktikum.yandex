@@ -48,7 +48,6 @@ export class HTTPClient {
 
       const isGet = method === METHODS.GET;
       const fullUrl = this.baseUrl + url;
-      const signInUrl = '/sign-in';
 
       const xhr = new XMLHttpRequest();
       xhr.timeout = timeout;
@@ -81,7 +80,10 @@ export class HTTPClient {
             reject(new Error(`Error parsing response: ${error}`));
           }
         } else if (xhr.status == 401) {
-          window.location.href = signInUrl;
+          if (window.location.pathname !== '/sign-in' && window.location.pathname !== '/sign-up') {
+            window.location.href = '/sign-in';
+          }
+          reject(new Error(`Unauthorized`));
         } else {
           reject(new Error(`The request failed: ${xhr.status} ${xhr.statusText}`));
         }

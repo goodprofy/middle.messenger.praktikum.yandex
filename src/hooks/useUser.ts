@@ -1,5 +1,7 @@
-import { client } from '../client';
+import { User } from '../client';
+import { useStore } from './useStore';
 
 export function useUser() {
-  return client.getCurrentUser;
+  const { get } = useStore();
+  return get('user') as User;
 }

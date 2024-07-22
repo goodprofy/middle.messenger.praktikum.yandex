@@ -36,13 +36,13 @@ export class SignUpForm extends Component<{}, State> {
       second_name: []
     },
     fields: {
-      email: 'test@waira.ru',
-      login: 'waira1',
-      first_name: 'Юлия',
-      second_name: 'Петрова',
-      phone: '+79091231212',
-      password: 'Test#334',
-      password_confirm: 'Test#334'
+      email: '',
+      login: '',
+      first_name: '',
+      second_name: '',
+      phone: '',
+      password: '',
+      password_confirm: ''
     },
     formIsValid: false
   };

@@ -1,39 +1,82 @@
-import { Component, eventBus } from '../../../../class';
-import { Button, Form, TextAreaField } from '../../../../components';
+import { Component } from '../../../../class';
+import { Button, Form, Modal, TextAreaField } from '../../../../components';
+import { useRouter } from '../../../../hooks';
+import { isDefined } from '../../../../utils';
+import { AddUserForm } from '../AddUserForm';
 import styles from './styles.module.scss';
+
+type Props = {
+  onSubmit: (message: string) => void;
+  chatId: number | undefined;
+};
 
 type State = {
   message: string;
+  shownAddUserModal: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export class MessageInput extends Component<{}, State> {
-  state: State = { message: '' };
+export class MessageInput extends Component<Props, State> {
+  state: State = { message: '', shownAddUserModal: false };
+  constructor(props: Props) {
+    super(props);
+  }
 
-  onChange = (message: string) => {
+  onTextAreaChange = (message: string) => {
     this.setState({ message });
   };
 
-  onSubmit = () => {
-    eventBus.emit('chat:send', this.state.message);
-    this.onChange('');
+  onTextAreaKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      this.onFormSubmit();
+    }
   };
 
-  onAdd = () => {
-    alert();
+  onFormSubmit = () => {
+    this.props.onSubmit(this.state.message);
+    this.onTextAreaChange('');
+  };
+
+  onUserAddClick = () => {
+    this.setState({ shownAddUserModal: true });
+  };
+
+  onAddUserModalBackdropClick = () => {
+    this.setState({ shownAddUserModal: false });
+  };
+
+  onAddUserFormSuccess = () => {
+    this.setState({ shownAddUserModal: false });
   };
 
   public render() {
-    const { message } = this.state;
+    const { message, shownAddUserModal } = this.state;
+
+    const { getParams } = useRouter();
+    const { id: chatId } = getParams<{ id: number }>(window.location.pathname);
+
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onFormSubmit}>
         <div className={styles.message_input}>
-          <Button isFullWidth={false} title="Add" onClick={this.onAdd} />
+          <Button isFullWidth={false} title="Add" onClick={this.onUserAddClick} />
           <div className={styles.text_editor}>
-            <TextAreaField name="message" value={message} onChange={this.onChange} label="Message" />
+            <TextAreaField
+              name="message"
+              value={message}
+              onChange={this.onTextAreaChange}
+              label="Message"
+              onKeyPress={this.onTextAreaKeyPress}
+            />
           </div>
           <Button isFullWidth={false} title="Send" type="submit" />
         </div>
+        {shownAddUserModal && isDefined(chatId) ? (
+          <Modal title="Add User to Chat" onBackdropClick={this.onAddUserModalBackdropClick}>
+            <AddUserForm onSuccess={this.onAddUserFormSuccess} chatId={chatId} />
+          </Modal>
+        ) : (
+          ''
+        )}
       </Form>
     );
   }

@@ -24,7 +24,7 @@ export class Auth extends Component<Props, State> {
       .getCurrentUser()
       .then(({ response }) => {
         console.log(response);
-        super.setState({ isAuth: true });
+        this.setState({ isAuth: true });
       })
 
       .catch((err) => {
@@ -34,7 +34,7 @@ export class Auth extends Component<Props, State> {
       })
 
       .finally(() => {
-        super.setState({ isLoading: false });
+        this.setState({ isLoading: false });
       });
   }
 

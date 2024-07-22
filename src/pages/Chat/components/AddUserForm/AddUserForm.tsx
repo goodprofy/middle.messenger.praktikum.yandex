@@ -3,31 +3,31 @@ import { client } from '../../../../client';
 import { Button, Form, InputField } from '../../../../components';
 
 type Props = {
-  onSuccess: (chatId: number) => void;
+  chatId: number;
+  onSuccess: () => void;
 };
 
 type State = {
+  fields: { usersStr: string };
+  errors: { usersStr: string[] };
   isSubmitting: boolean;
-  fields: { title: string };
-  errors: {
-    title: string[];
-  };
 };
 
-export class CreateChatForm extends Component<Props, State> {
-  state: State = {
-    isSubmitting: false,
-    fields: { title: '' },
-    errors: { title: [] }
-  };
+export class AddUserForm extends Component<Props, State> {
+  state: State = { fields: { usersStr: '' }, errors: { usersStr: [] }, isSubmitting: false };
+
+  constructor(props: Props) {
+    super(props);
+  }
 
   onFormSubmit = () => {
-    const { title } = this.state.fields;
+    const { chatId } = this.props;
+    const { usersStr } = this.state.fields;
     this.setState({ isSubmitting: true });
     client
-      .createChat({ title })
-      .then(({ response }) => {
-        this.props.onSuccess(response.id);
+      .addUsersToChats({ users: [Number(usersStr)], chatId })
+      .then(() => {
+        this.props.onSuccess();
       })
       .finally(() => {
         this.setState({ isSubmitting: false });
@@ -43,16 +43,16 @@ export class CreateChatForm extends Component<Props, State> {
     return (
       <Form onSubmit={this.onFormSubmit}>
         <InputField
-          name="title"
+          name="usersStr"
           type="text"
-          label="Chat title"
+          label="ID user"
           onChange={this.onInputChange}
-          value={fields.title}
-          errors={errors.title}
+          value={fields.usersStr}
+          errors={errors.usersStr}
           required
           minLength={3}
         />
-        <Button title={isSubmitting ? 'Submitting...' : 'Create'} type="submit" />
+        <Button title={isSubmitting ? 'Submitting...' : 'Add'} type="submit" />
       </Form>
     );
   }

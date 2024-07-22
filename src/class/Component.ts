@@ -26,6 +26,9 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
     }
   };
 
+  mount() {}
+  unmount() {}
+
   protected update() {
     const oldElement = this.element;
     const newElement = this.render() as unknown as HTMLElement | null; //TODO: Fix me
@@ -34,6 +37,7 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
       this.updateElement(oldElement, newElement);
     } else if (newElement) {
       this.element = newElement;
+      this.mount();
     }
   }
 
@@ -97,9 +101,11 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
           this.updateElement(existingChild as HTMLElement, newChild as HTMLElement);
         } else if (existingChild.nodeValue !== newChild.nodeValue) {
           mountedElement.replaceChild(newChild, existingChild);
+          this.unmount();
         }
       } else {
         mountedElement.replaceChild(newChild, existingChild);
+        this.unmount();
       }
     });
   }

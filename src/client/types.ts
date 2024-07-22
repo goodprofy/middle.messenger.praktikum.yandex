@@ -64,3 +64,10 @@ export type UpdateUserPasswordParams = {
   newPassword: string;
 };
 export type GetUserByLoginParams = Pick<User, 'login'>;
+export type AddUsersToChatsParams = { users: User['id'][]; chatId: Chat['id'] };
+export type DeleteUsersFromChatParams = { users: User['id'][]; chatId: Chat['id'] };
+export type GetChatUsersParams = { id: Chat['id']; offset: number; limit: number; name?: string; email?: string };
+export type ChatUser = Pick<User, 'id' | 'first_name' | 'second_name' | 'display_name' | 'login' | 'avatar'> & {
+  role: 'admin' | 'regular';
+};
+export type GetChatUsersPayload = ChatUser[];

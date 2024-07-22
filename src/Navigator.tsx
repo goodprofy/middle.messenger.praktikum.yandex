@@ -1,4 +1,6 @@
 import { Component, Router } from './class';
+import { client } from './client';
+import { useStore } from './hooks';
 
 type Props = {
   router: Router;
@@ -20,11 +22,20 @@ export class Navigator extends Component<Props, State> {
     document.addEventListener('routechange', (event: Event) => {
       const newPage = (event as CustomEvent<HTMLElement>).detail;
 
-      const rootNode = document.getElementById('root');
-      if (rootNode) {
-        this.replacePage(rootNode, newPage);
-        this.setState({ currentRoute: newPage });
-      }
+      const { set } = useStore();
+
+      client
+        .getCurrentUser()
+        .then(({ response }) => {
+          set('user', response);
+        })
+        .finally(() => {
+          const rootNode = document.getElementById('root');
+          if (rootNode) {
+            this.replacePage(rootNode, newPage);
+            this.setState({ currentRoute: newPage });
+          }
+        });
     });
 
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -41,6 +52,6 @@ export class Navigator extends Component<Props, State> {
 
   render() {
     //нужно возвращать currentRoute, но есть проблемы с шаблонизатором.
-    return null;
+    return <div />;
   }
 }

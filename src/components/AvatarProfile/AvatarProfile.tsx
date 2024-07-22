@@ -16,7 +16,7 @@ export class AvatarProfile extends Component<{}, State> {
     super({});
     client.getCurrentUser().then(({ response }) => {
       if (response.avatar.length > 0) {
-        super.setState({ src: response.avatar });
+        this.setState({ src: response.avatar });
       }
     });
   }

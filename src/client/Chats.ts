@@ -1,12 +1,16 @@
 import { HTTPClient } from '../class';
 import type {
+  AddUsersToChatsParams,
   Chat,
   ChatsParams,
   CreateChatParams,
   CreateChatPayload,
   DeleteChatParams,
+  DeleteUsersFromChatParams,
   GetChatTokenParams,
-  GetChatTokenPayload
+  GetChatTokenPayload,
+  GetChatUsersParams,
+  GetChatUsersPayload
 } from './types';
 
 export class ChatsClient extends HTTPClient {
@@ -20,6 +24,15 @@ export class ChatsClient extends HTTPClient {
     return this.delete('chats', { data });
   }
   getChatToken(data: GetChatTokenParams) {
-    return this.post<GetChatTokenPayload[]>(`chats/token/${data.id}`, { data });
+    return this.post<GetChatTokenPayload>(`chats/token/${data.id}`, { data });
+  }
+  addUsersToChats(data: AddUsersToChatsParams) {
+    return this.put(`chats/users`, { data });
+  }
+  deleteUsersFromChat(data: DeleteUsersFromChatParams) {
+    return this.delete(`chats/users`, { data });
+  }
+  getChatUsers(data: GetChatUsersParams) {
+    return this.get<GetChatUsersPayload>(`chats/${data.id}/users`, { data });
   }
 }

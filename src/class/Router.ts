@@ -42,6 +42,10 @@ export class Router {
     return this.routes.find((route) => route.match(pathname));
   }
 
+  public getParams = <T>(pathname: Route['pathname']): T => {
+    return this.currentRoute?.getUrlParams(pathname) as T;
+  };
+
   public navigate = (path: string) => {
     this.history.pushState({}, '', path);
     this.onLocationChange();

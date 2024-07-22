@@ -1,4 +1,5 @@
 import { isDefined, logError, queryStringify } from '../utils';
+import { UserAlreadyInSystemError } from './Error';
 
 const isUnauthorized = () => {
   if (window.location.pathname !== '/sign-in' && window.location.pathname !== '/sign-up') {
@@ -92,8 +93,15 @@ export class HTTPClient {
         } else {
           logError(xhr);
           const parsedReason = this.getParsedResponse<{ reason: string }>(xhr.responseText);
-          const err = new Error(`The request failed: ${xhr.status} ${xhr.statusText} ${parsedReason.reason}`);
-          alert(err.message);
+          const isUserAlreadyInSystem = parsedReason.reason === 'User already in system';
+          const message = `The request failed: ${xhr.status} ${xhr.statusText} ${parsedReason.reason}`;
+          let err = new Error(message);
+          if (!isUserAlreadyInSystem) {
+            alert(err.message);
+          } else {
+            err = new UserAlreadyInSystemError(message);
+          }
+
           reject(err);
         }
       };

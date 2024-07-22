@@ -1,4 +1,5 @@
 export * from './Component';
+export * from './Error';
 export * from './EventBus';
 export * from './HTTPClient';
 export * from './Route';

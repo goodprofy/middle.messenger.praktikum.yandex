@@ -1,7 +1,6 @@
 import { Component } from '../../class';
 import { client } from '../../client';
-import { useRouter } from '../../hooks';
-import { logError } from '../../utils';
+import { useRouter, useStore } from '../../hooks';
 import { Loading } from '../Loading';
 
 type Props = PropsWithChildren;
@@ -22,12 +21,13 @@ export class Auth extends Component<Props, State> {
 
     client
       .getCurrentUser()
-      .then(() => {
+      .then((user) => {
+        const store = useStore();
+        store.set('user', user);
         this.setState({ isAuth: true });
       })
 
-      .catch((err) => {
-        logError(err);
+      .catch(() => {
         const { navigate } = useRouter();
         navigate('/sign-in');
       })
@@ -42,9 +42,13 @@ export class Auth extends Component<Props, State> {
     const { isLoading } = this.state;
 
     if (isLoading) {
-      return <Loading />;
+      return (
+        <div>
+          <Loading />
+        </div>
+      );
     }
 
-    return <>{children}</>;
+    return <div>{children}</div>; //TODO Remove <div>
   }
 }

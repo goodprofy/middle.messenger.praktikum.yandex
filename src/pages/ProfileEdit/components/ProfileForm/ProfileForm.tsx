@@ -2,7 +2,7 @@ import { Component } from '../../../../class';
 import { type UpdateUserParams, client } from '../../../../client';
 import { Button, Form, InputField, ProfileRowEdit } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
-import { getInputErrorMessage, isDefined } from '../../../../utils';
+import { getInputErrorMessage, isDefined, logError } from '../../../../utils';
 
 type InputFieldProps = ConstructorParameters<typeof InputField>[0];
 
@@ -40,9 +40,14 @@ export class ProfileForm extends Component<Props, State> {
 
   onFormSubmit = () => {
     this.setState({ isSubmitting: true });
-    client.updateUser(this.state.fields).finally(() => {
-      this.setState({ isSubmitting: false });
-    });
+    client
+      .updateUser(this.state.fields)
+      .finally(() => {
+        this.setState({ isSubmitting: false });
+      })
+      .catch((err) => {
+        logError(err);
+      });
   };
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {

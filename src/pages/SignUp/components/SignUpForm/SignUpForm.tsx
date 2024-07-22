@@ -1,4 +1,4 @@
-import { Component } from '../../../../class';
+import { Component, UserAlreadyInSystemError } from '../../../../class';
 import { client } from '../../../../client';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PASSWORD_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
@@ -48,12 +48,19 @@ export class SignUpForm extends Component<{}, State> {
   };
 
   onFormSubmit = () => {
-    client.signUp(this.state.fields).then(({ id }) => {
-      if (id !== 0) {
-        const { navigate } = useRouter();
-        navigate('/messenger');
-      }
-    });
+    const { navigate } = useRouter();
+    client
+      .signUp(this.state.fields)
+      .then(({ id }) => {
+        if (id !== 0) {
+          navigate('/messenger');
+        }
+      })
+      .catch((err) => {
+        if (err instanceof UserAlreadyInSystemError) {
+          navigate('/messenger');
+        }
+      });
   };
 
   checkInputValidity: InputFieldProps['checkValidity'] = (validity, fieldName) => {

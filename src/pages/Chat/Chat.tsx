@@ -1,59 +1,62 @@
 import { Component, Socket } from '../../class';
-import { type ChatUser, type User, client } from '../../client';
+import { type ChatUser, GetChatUsersParams, type User, client } from '../../client';
 import { useRouter, useStore } from '../../hooks';
-import { isDefined, logError } from '../../utils';
+import { logError } from '../../utils';
 import { Header, MessageInput, Messages } from './components';
 import styles from './styles.module.scss';
 
 type State = {
   messages: string[];
   socket: Socket | undefined;
-  chatId: number | undefined;
+  chatId: number;
   users: ChatUser[];
-};
+} & Pick<GetChatUsersParams, 'limit' | 'name' | 'offset' | 'email'>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class Chat extends Component<{}, State> {
-  state: State = {
-    messages: [],
-    socket: undefined,
-    chatId: undefined,
-    users: []
-  };
   constructor() {
     super({});
 
-    try {
-      const store = useStore();
-      const { getParams } = useRouter();
-      const { id: chatId } = getParams<{ id: number }>(window.location.pathname);
-      this.setState({ chatId });
-      const onStoreChange = () => {
-        const { user } = store.getState<{ user: User | undefined }>();
-        if (isDefined(user)) {
-          client.getChatToken({ id: chatId }).then(({ token }) => {
-            const socket = new Socket(`chats/${user?.id}/${chatId}/${token}`);
+    const { getParams } = useRouter();
+    const { id: chatId } = getParams<{ id: number }>(window.location.pathname);
+    this.state = {
+      messages: [],
+      socket: undefined,
+      chatId: chatId,
+      users: [],
+      limit: 10,
+      offset: 0
+    };
 
-            this.setState({ socket });
-          });
-        }
-      };
-
-      store.subscribe(onStoreChange);
-
-      this.getChatUsers();
-    } catch (error) {
-      logError(error);
-    }
+    this.getChatTocken();
+    this.getChatUsers();
   }
 
-  getChatUsers = () => {
+  getChatTocken = () => {
+    const store = useStore();
+    const { user } = store.getState<{ user: User }>();
     const { chatId } = this.state;
-    if (isDefined(chatId)) {
-      client.getChatUsers({ id: chatId, limit: 10, offset: 0 }).then((response) => {
-        this.setState({ users: response });
+    client
+      .getChatToken({ id: chatId })
+      .then(({ token }) => {
+        const socket = new Socket(`chats/${user.id}/${this.state.chatId}/${token}`);
+        this.setState({ socket });
+      })
+      .catch((err) => {
+        logError(err);
       });
-    }
+  };
+
+  getChatUsers = () => {
+    const { chatId, limit, offset } = this.state;
+    client
+      .getChatUsers({ id: chatId, limit, offset })
+      .then((response) => {
+        this.setState({ users: response });
+      })
+      .catch((err) => {
+        logError(err);
+      });
   };
 
   onMessageSubmit = (message: string) => {
@@ -75,7 +78,7 @@ export class Chat extends Component<{}, State> {
         <div className={styles.area}>
           <Header users={users} onDeleteUserSuccess={this.onDeleteUserClick} chatId={chatId} />
           <div className={styles.messages}>
-            {socket ? <Messages socket={socket} onUserConnected={this.onUserConnected} /> : ''}
+            {socket ? <Messages socket={socket} onUserConnected={this.onUserConnected} /> : 'Loading...'}
           </div>
           <MessageInput onSubmit={this.onMessageSubmit} chatId={chatId} />
         </div>

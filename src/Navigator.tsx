@@ -1,6 +1,7 @@
 import { Component, Router } from './class';
-import { client } from './client';
+import { User, client } from './client';
 import { useStore } from './hooks';
+import { isDefined, logError } from './utils';
 
 type Props = {
   router: Router;
@@ -18,27 +19,44 @@ export class Navigator extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    console.log('Navigator');
-
-    const { set } = useStore();
-
-    client.getCurrentUser().then((response) => {
-      set('user', response);
-    });
-
     const rootNode = document.getElementById('root');
     //вместо медиатора
     document.addEventListener('routechange', (event: Event) => {
-      const newPage = (event as CustomEvent<HTMLElement>).detail;
+      this.checkAuth(() => {
+        const newPage = (event as CustomEvent<HTMLElement>).detail;
 
-      if (rootNode) {
-        this.replacePage(rootNode, newPage);
-        this.setState({ currentRoute: newPage });
-      }
+        if (rootNode) {
+          this.replacePage(rootNode, newPage);
+          this.setState({ currentRoute: newPage });
+        }
+      });
     });
 
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    this.checkAuth(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
   }
+
+  //TODO Remove
+  private checkAuth = (callback: () => void) => {
+    const store = useStore();
+    const { user } = store.getState<{ user: User }>();
+    if (!isDefined(user)) {
+      client
+        .getCurrentUser()
+        .then((data) => {
+          store.set('user', data);
+        })
+        .catch((err) => {
+          logError(err);
+        })
+        .finally(() => {
+          callback();
+        });
+    } else {
+      callback();
+    }
+  };
 
   //костыль, решает проблему потери parentNode
   replacePage(rootElement: Node, newComponent: HTMLElement) {
@@ -51,6 +69,6 @@ export class Navigator extends Component<Props, State> {
 
   render() {
     //нужно возвращать currentRoute, но есть проблемы с шаблонизатором.
-    return <div />;
+    return <span />;
   }
 }

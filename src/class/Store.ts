@@ -30,8 +30,8 @@ export class Store {
     };
   }
 
-  get = (key: string) => {
-    return this.state[key];
+  get = <T>(key: string): T => {
+    return this.state[key] as T;
   };
 
   set = (key: string, value: unknown) => {

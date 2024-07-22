@@ -1,4 +1,5 @@
 import { Component, Socket } from '../../../../class';
+import { Flex } from '../../../../components';
 import { Message } from '../Message';
 
 type Props = {
@@ -45,11 +46,12 @@ export class Messages extends Component<Props, State> {
   render() {
     const { messages } = this.state;
     return (
-      <div>
+      <Flex isColumn gap={2}>
         {messages.map((message) => {
           return <Message {...message} />;
         })}
-      </div>
+        {messages.length === 0 ? <div>Messages not found</div> : ''}
+      </Flex>
     );
   }
 }

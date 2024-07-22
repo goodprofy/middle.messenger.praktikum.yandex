@@ -2,7 +2,7 @@ import { Component } from '../../class';
 import { client } from '../../client';
 import { API_BASE_URL } from '../../constants';
 import { useRouter } from '../../hooks';
-import { isDefined } from '../../utils';
+import { isDefined, logError } from '../../utils';
 import { Link } from '../Link';
 import styles from './styles.module.scss';
 
@@ -14,11 +14,16 @@ type State = {
 export class AvatarProfile extends Component<{}, State> {
   constructor() {
     super({});
-    client.getCurrentUser().then(({ avatar }) => {
-      if (avatar?.length > 0) {
-        this.setState({ src: avatar });
-      }
-    });
+    client
+      .getCurrentUser()
+      .then(({ avatar }) => {
+        if (avatar?.length > 0) {
+          this.setState({ src: avatar });
+        }
+      })
+      .catch((err) => {
+        logError(err);
+      });
   }
 
   onAvatarClick = () => {

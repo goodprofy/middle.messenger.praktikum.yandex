@@ -1,4 +1,4 @@
-import { Component } from '../../../../class';
+import { Component, UserAlreadyInSystemError } from '../../../../class';
 import { type SignInData, client } from '../../../../client';
 import { Button, Form, InputField, Link } from '../../../../components';
 import { LOGIN_REG_EXP, PASSWORD_REG_EXP } from '../../../../constants';
@@ -31,11 +31,18 @@ export class SignInForm extends Component<{}, State> {
   passwordRef: HTMLInputElement | null = null;
 
   onFormSubmit = () => {
+    const { navigate } = useRouter();
     const { fields } = this.state;
-    client.signIn(fields).then(() => {
-      const { navigate } = useRouter();
-      navigate('/messenger');
-    });
+    client
+      .signIn(fields)
+      .then(() => {
+        navigate('/messenger');
+      })
+      .catch((err) => {
+        if (err instanceof UserAlreadyInSystemError) {
+          navigate('/messenger');
+        }
+      });
   };
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {

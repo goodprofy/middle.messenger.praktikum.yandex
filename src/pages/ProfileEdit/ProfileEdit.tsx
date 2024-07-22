@@ -21,7 +21,7 @@ export class ProfileEdit extends Component<{}, State> {
 
     client
       .getCurrentUser()
-      .then(({ response }) => {
+      .then((response) => {
         this.setState({ user: response });
       })
       .finally(() => {

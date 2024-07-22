@@ -32,7 +32,7 @@ export class Chat extends Component<{}, State> {
       const onStoreChange = () => {
         const { user } = store.getState<{ user: User | undefined }>();
         if (isDefined(user)) {
-          client.getChatToken({ id: chatId }).then(({ response: { token } }) => {
+          client.getChatToken({ id: chatId }).then(({ token }) => {
             const socket = new Socket(`chats/${user?.id}/${chatId}/${token}`);
 
             this.setState({ socket });
@@ -51,7 +51,7 @@ export class Chat extends Component<{}, State> {
   getChatUsers = () => {
     const { chatId } = this.state;
     if (isDefined(chatId)) {
-      client.getChatUsers({ id: chatId, limit: 10, offset: 0 }).then(({ response }) => {
+      client.getChatUsers({ id: chatId, limit: 10, offset: 0 }).then((response) => {
         this.setState({ users: response });
       });
     }

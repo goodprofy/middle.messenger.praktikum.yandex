@@ -1,4 +1,10 @@
-import { isDefined, queryStringify } from '../utils';
+import { isDefined, logError, queryStringify } from '../utils';
+
+const isUnauthorized = () => {
+  if (window.location.pathname !== '/sign-in' && window.location.pathname !== '/sign-up') {
+    window.location.href = '/sign-in';
+  }
+};
 
 const METHODS = {
   GET: 'GET',
@@ -17,7 +23,7 @@ export type RequestOptions = {
   isMultipart?: boolean;
 };
 
-type Response<T> = Promise<{ response: T }>;
+type Response<T> = Promise<T>;
 
 export class HTTPClient {
   constructor(private baseUrl: `https://${string}`) {}
@@ -40,7 +46,7 @@ export class HTTPClient {
 
   private request<T>(url: string, options: RequestOptions, timeout: number = 5000): Response<T> {
     const { headers = {}, method, data, isMultipart = false } = options;
-    return new Promise((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
       if (!isDefined(method)) {
         reject(new Error('No method'));
         return;
@@ -67,25 +73,28 @@ export class HTTPClient {
         xhr.setRequestHeader('Content-Type', 'application/json');
       }
 
-      xhr.onload = function () {
+      xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
             if (xhr.response === 'OK') {
-              resolve({ response: { ok: true } as T });
+              resolve({ ok: true } as T);
             } else {
-              const parsedResponse = xhr.responseText.length > 0 ? JSON.parse(xhr.responseText) : null;
-              resolve({ response: parsedResponse });
+              const parsedResponse = this.getParsedResponse<T>(xhr.responseText);
+              resolve(parsedResponse);
             }
           } catch (error) {
             reject(new Error(`Error parsing response: ${error}`));
           }
         } else if (xhr.status == 401) {
-          if (window.location.pathname !== '/sign-in' && window.location.pathname !== '/sign-up') {
-            window.location.href = '/sign-in';
-          }
-          reject(new Error(`Unauthorized`));
+          isUnauthorized();
+          const err = new Error(`Unauthorized`);
+          reject(err);
         } else {
-          reject(new Error(`The request failed: ${xhr.status} ${xhr.statusText}`));
+          logError(xhr);
+          const parsedReason = this.getParsedResponse<{ reason: string }>(xhr.responseText);
+          const err = new Error(`The request failed: ${xhr.status} ${xhr.statusText} ${parsedReason.reason}`);
+          alert(err.message);
+          reject(err);
         }
       };
 
@@ -105,5 +114,9 @@ export class HTTPClient {
         xhr.send(JSON.stringify(data));
       }
     });
+  }
+
+  private getParsedResponse<T>(responseText: string): T {
+    return JSON.parse(responseText);
   }
 }

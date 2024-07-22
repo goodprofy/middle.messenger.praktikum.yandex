@@ -26,8 +26,8 @@ export class CreateChatForm extends Component<Props, State> {
     this.setState({ isSubmitting: true });
     client
       .createChat({ title })
-      .then(({ response }) => {
-        this.props.onSuccess(response.id);
+      .then(({ id }) => {
+        this.props.onSuccess(id);
       })
       .finally(() => {
         this.setState({ isSubmitting: false });

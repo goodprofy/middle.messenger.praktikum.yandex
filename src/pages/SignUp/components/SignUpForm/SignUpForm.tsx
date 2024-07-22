@@ -48,7 +48,7 @@ export class SignUpForm extends Component<{}, State> {
   };
 
   onFormSubmit = () => {
-    client.signUp(this.state.fields).then(({ response: { id } }) => {
+    client.signUp(this.state.fields).then(({ id }) => {
       if (id !== 0) {
         const { navigate } = useRouter();
         navigate('/messenger');

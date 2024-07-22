@@ -14,9 +14,9 @@ type State = {
 export class AvatarProfile extends Component<{}, State> {
   constructor() {
     super({});
-    client.getCurrentUser().then(({ response }) => {
-      if (response.avatar.length > 0) {
-        this.setState({ src: response.avatar });
+    client.getCurrentUser().then(({ avatar }) => {
+      if (avatar?.length > 0) {
+        this.setState({ src: avatar });
       }
     });
   }

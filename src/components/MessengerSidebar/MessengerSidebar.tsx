@@ -31,16 +31,17 @@ export class MessengerSidebar extends Component<{}, State> {
     this.getChats();
   }
 
-  getChats() {
+  getChats = () => {
+    const { limit, offset, title } = this.state;
     client
-      .getChats({ limit: 10, offset: 0, title: this.state.title })
-      .then(({ response }) => {
+      .getChats({ limit, offset, title })
+      .then((response) => {
         this.setState({ chats: response, isLoading: false });
       })
       .finally(() => {
         this.setState({ isLoading: false });
       });
-  }
+  };
 
   onSearchChange = (value: string) => {
     this.setState({ title: value });

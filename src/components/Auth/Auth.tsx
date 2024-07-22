@@ -22,8 +22,7 @@ export class Auth extends Component<Props, State> {
 
     client
       .getCurrentUser()
-      .then(({ response }) => {
-        console.log(response);
+      .then(() => {
         this.setState({ isAuth: true });
       })
 
@@ -38,7 +37,7 @@ export class Auth extends Component<Props, State> {
       });
   }
 
-  render(): JSX.Element | null {
+  render() {
     const { children } = this.props;
     const { isLoading } = this.state;
 

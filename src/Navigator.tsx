@@ -18,24 +18,23 @@ export class Navigator extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    console.log('Navigator');
+
+    const { set } = useStore();
+
+    client.getCurrentUser().then((response) => {
+      set('user', response);
+    });
+
+    const rootNode = document.getElementById('root');
     //вместо медиатора
     document.addEventListener('routechange', (event: Event) => {
       const newPage = (event as CustomEvent<HTMLElement>).detail;
 
-      const { set } = useStore();
-
-      client
-        .getCurrentUser()
-        .then(({ response }) => {
-          set('user', response);
-        })
-        .finally(() => {
-          const rootNode = document.getElementById('root');
-          if (rootNode) {
-            this.replacePage(rootNode, newPage);
-            this.setState({ currentRoute: newPage });
-          }
-        });
+      if (rootNode) {
+        this.replacePage(rootNode, newPage);
+        this.setState({ currentRoute: newPage });
+      }
     });
 
     window.dispatchEvent(new PopStateEvent('popstate'));

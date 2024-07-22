@@ -7,3 +7,4 @@ export const PHONE_REG_EXP = /\+?\d{10,15}/;
 
 export const API_BASE_URL = 'https://ya-praktikum.tech/api/v2/';
 export const API_WS_URL = 'wss://ya-praktikum.tech/ws/';
+export const API_STATIC_URL = 'https://ya-praktikum.tech/api/v2/resources';

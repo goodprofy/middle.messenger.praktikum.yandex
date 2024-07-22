@@ -33,6 +33,9 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
     const oldElement = this.element;
     const newElement = this.render() as unknown as HTMLElement | null; //TODO: Fix me
 
+    //console.log('old', oldElement.__componentInstance);
+    //console.log('new', newElement.__componentInstance);
+
     if (oldElement && newElement && oldElement.parentNode) {
       this.updateElement(oldElement, newElement);
     } else if (newElement) {

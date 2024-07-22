@@ -1,5 +1,5 @@
 import { Component, Socket } from '../../../../class';
-import { Message } from '../Message/Message';
+import { Message } from '../Message';
 
 type Props = {
   socket: Socket;
@@ -31,6 +31,7 @@ export class Messages extends Component<Props, State> {
 
     props.socket.instance.addEventListener('message', (event) => {
       const response = JSON.parse(event.data) as Message | Message[];
+
       if (Array.isArray(response)) {
         this.setState({ messages: [...response].reverse() });
       } else if (response.type === 'message') {

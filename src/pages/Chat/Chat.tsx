@@ -1,6 +1,5 @@
 import { Component, Socket } from '../../class';
 import { type ChatUser, type User, client } from '../../client';
-import { MessengerSidebar } from '../../components';
 import { useRouter, useStore } from '../../hooks';
 import { isDefined, logError } from '../../utils';
 import { Header, MessageInput, Messages } from './components';
@@ -73,7 +72,6 @@ export class Chat extends Component<{}, State> {
     const { socket, chatId, users } = this.state;
     return (
       <div className={styles.chat}>
-        <MessengerSidebar />
         <div className={styles.area}>
           <Header users={users} onDeleteUserSuccess={this.onDeleteUserClick} chatId={chatId} />
           <div className={styles.messages}>

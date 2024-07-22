@@ -1,10 +1,9 @@
 import { Button } from '../../components';
-import { useRouter, useUser } from '../../hooks';
+import { useRouter } from '../../hooks';
 import styles from './styles.module.scss';
 
 export const User: FC<PropsWithChildren> = ({ children }) => {
   const { navigate } = useRouter();
-  useUser();
 
   const onBackClick = () => {
     navigate('/messenger');

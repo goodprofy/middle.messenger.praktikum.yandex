@@ -24,30 +24,33 @@ export type RequestOptions = {
   isMultipart?: boolean;
 };
 
-type Response<T> = Promise<T>;
+type Reason = { reason: string };
+type ResponseData<T = unknown> = T;
+
+type HTTPMethod = <T = unknown>(url: string, options: RequestOptions) => Promise<ResponseData<T>>;
 
 export class HTTPClient {
   constructor(private baseUrl: `https://${string}`) {}
 
-  protected get<T>(url: string, options: RequestOptions): Response<T> {
-    return this.request<T>(url, { ...options, method: METHODS.GET });
-  }
+  protected get: HTTPMethod = (url, options = {}) => {
+    return this.request(url, { ...options, method: METHODS.GET });
+  };
 
-  protected post<T>(url: string, options: RequestOptions): Response<T> {
+  protected post: HTTPMethod = (url, options) => {
     return this.request(url, { ...options, method: METHODS.POST });
-  }
+  };
 
-  protected put<T>(url: string, options: RequestOptions): Response<T> {
+  protected put: HTTPMethod = (url, options) => {
     return this.request(url, { ...options, method: METHODS.PUT });
-  }
+  };
 
-  protected delete<T>(url: string, options: RequestOptions): Response<T> {
+  protected delete: HTTPMethod = (url, options) => {
     return this.request(url, { ...options, method: METHODS.DELETE });
-  }
+  };
 
-  private request<T>(url: string, options: RequestOptions, timeout: number = 5000): Response<T> {
+  private request: HTTPMethod = <T = unknown>(url: string, options: RequestOptions, timeout: number = 5000) => {
     const { headers = {}, method, data, isMultipart = false } = options;
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<ResponseData<T>>((resolve, reject) => {
       if (!isDefined(method)) {
         reject(new Error('No method'));
         return;
@@ -92,7 +95,7 @@ export class HTTPClient {
           reject(err);
         } else {
           logError(xhr);
-          const parsedReason = this.getParsedResponse<{ reason: string }>(xhr.responseText);
+          const parsedReason = this.getParsedResponse<Reason>(xhr.responseText);
           const isUserAlreadyInSystem = parsedReason.reason === 'User already in system';
           const message = `The request failed: ${xhr.status} ${xhr.statusText} ${parsedReason.reason}`;
           let err = new Error(message);
@@ -122,7 +125,7 @@ export class HTTPClient {
         xhr.send(JSON.stringify(data));
       }
     });
-  }
+  };
 
   private getParsedResponse<T>(responseText: string): T {
     return JSON.parse(responseText);

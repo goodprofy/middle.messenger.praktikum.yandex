@@ -64,15 +64,15 @@ export class MessengerSidebar extends Component<{}, State> {
   render() {
     const { title, chats, shownCreateChatModal } = this.state;
     return (
-      <div className={styles.sidebar}>
-        <div className={styles.sidebar_header}>
+      <div class={styles.sidebar}>
+        <div class={styles.sidebar_header}>
           <Link to="/settings" title="Profile" />
           <Search value={title ?? ''} onChange={this.onSearchChange} />
         </div>
-        <div className={styles.sidebar_chats}>
+        <div class={styles.sidebar_chats}>
           <Chats chats={chats} />
         </div>
-        <div className={styles.sidebar_footer}>
+        <div class={styles.sidebar_footer}>
           <Button title="Create chat" onClick={this.onCreateChatClick} />
         </div>
         {shownCreateChatModal ? (

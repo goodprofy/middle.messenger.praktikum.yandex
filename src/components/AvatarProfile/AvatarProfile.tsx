@@ -50,10 +50,10 @@ export class AvatarProfile extends Component<{}, State> {
     const { alt, src } = this.state;
 
     return (
-      <div className={styles.avatar_profile}>
+      <div class={styles.avatar_profile}>
         {isDefined(src) && isDefined(alt) ? <img src={src} alt={alt} /> : ''}
 
-        <div className={styles.avatar_change}>
+        <div class={styles.avatar_change}>
           <Link title="Change avatar" onClick={this.onAvatarClick} />
         </div>
       </div>

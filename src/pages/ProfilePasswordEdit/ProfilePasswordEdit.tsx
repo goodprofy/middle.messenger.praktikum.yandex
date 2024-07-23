@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 
 export const ProfilePasswordEdit = () => {
   return (
-    <div className={styles.profile_password_edit}>
+    <div class={styles.profile_password_edit}>
       <Flex gap={1} isCenter isColumn>
         <AvatarProfile />
       </Flex>

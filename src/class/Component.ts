@@ -36,6 +36,8 @@ export class Component<Props = Record<string, unknown>, State = Record<string, u
     //console.log('old', oldElement.__componentInstance);
     //console.log('new', newElement.__componentInstance);
 
+    console.log('update');
+
     if (oldElement && newElement && oldElement.parentNode) {
       this.updateElement(oldElement, newElement);
     } else if (newElement) {

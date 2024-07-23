@@ -32,7 +32,7 @@ export class Search extends Component<Props, State> {
     const { value } = this.props;
     const { isFocus } = this.state;
     return (
-      <label className={styles.search}>
+      <label class={styles.search}>
         <Input
           name="search"
           value={value}
@@ -41,7 +41,7 @@ export class Search extends Component<Props, State> {
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
         />
-        {!isFocus ? <span className={styles.label}>Search</span> : ''}
+        {!isFocus ? <span class={styles.label}>Search</span> : ''}
       </label>
     );
   }

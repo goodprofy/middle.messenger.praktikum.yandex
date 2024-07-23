@@ -10,8 +10,8 @@ export const User: FC<PropsWithChildren> = ({ children }) => {
   };
 
   return (
-    <main className={styles.layout_user}>
-      <aside className={styles.sidebar}>
+    <main class={styles.layout_user}>
+      <aside class={styles.sidebar}>
         <Button title="Back" onClick={onBackClick} />
       </aside>
       {children}

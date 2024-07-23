@@ -17,13 +17,13 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   title
 }) => {
   return (
-    <div className={styles.modal}>
-      <div className={styles.content}>
-        <h2 className={styles.header}>{title}</h2>
-        <div className={styles.body}>{children}</div>
-        {isDefined(buttons) && buttons.length > 0 ? <div className={styles.footer}>{children}</div> : null}
+    <div class={styles.modal}>
+      <div class={styles.content}>
+        <h2 class={styles.header}>{title}</h2>
+        <div class={styles.body}>{children}</div>
+        {isDefined(buttons) && buttons.length > 0 ? <div class={styles.footer}>{children}</div> : null}
       </div>
-      {shownBackdrop ? <div className={styles.backdrop} onClick={onBackdropClick} /> : null}
+      {shownBackdrop ? <div class={styles.backdrop} onClick={onBackdropClick} /> : null}
     </div>
   );
 };

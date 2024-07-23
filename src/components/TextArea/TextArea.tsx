@@ -23,9 +23,9 @@ export const TextArea: FC<Props> = ({ name, onBlur, onChange, onFocus, onKeyPres
     <textarea
       ref={ref}
       name={name}
-      className={styles.textarea}
+      class={styles.textarea}
       onBlur={onBlur}
-      onChange={onTextAreaChange}
+      onInput={onTextAreaChange}
       onFocus={onFocus}
       required={required}
       onKeyDown={onKeyPress}

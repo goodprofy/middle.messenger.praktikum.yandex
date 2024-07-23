@@ -55,7 +55,7 @@ export class TextAreaField extends Component<Props, State> {
     const isActive = hasValue || hasFocus;
 
     return (
-      <label className={clsx(styles.textarea_field, isActive && styles.focus)}>
+      <label class={clsx(styles.textarea_field, isActive && styles.focus)}>
         <TextArea
           ref={(el) => {
             this.ref = el;
@@ -68,7 +68,7 @@ export class TextAreaField extends Component<Props, State> {
           onBlur={this.onInputBlur}
           onKeyPress={onKeyPress}
         />
-        <span className={styles.label}>{label}</span>
+        <span class={styles.label}>{label}</span>
       </label>
     );
   }

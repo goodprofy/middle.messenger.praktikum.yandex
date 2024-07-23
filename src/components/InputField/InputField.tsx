@@ -44,8 +44,8 @@ export class InputField extends Component<Props> {
     const hasErrors = errors.length > 0;
 
     return (
-      <div className={styles.input_field}>
-        <div className={styles.fieldset}>
+      <div class={styles.input_field}>
+        <div class={styles.fieldset}>
           <label for={name}>{label}</label>
           <Input
             {...inputRest}
@@ -59,7 +59,7 @@ export class InputField extends Component<Props> {
             name={name}
           />
         </div>
-        <div className={clsx(styles.errors, hasErrors && styles.errors_show)}>
+        <div class={clsx(styles.errors, hasErrors && styles.errors_show)}>
           <TextError>{errors.join('. ')}</TextError>
         </div>
       </div>

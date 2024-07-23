@@ -63,9 +63,9 @@ export class MessageInput extends Component<Props, State> {
 
     return (
       <Form onSubmit={this.onFormSubmit}>
-        <div className={styles.message_input}>
+        <div class={styles.message_input}>
           <Button isFullWidth={false} title="Add" onClick={this.onUserAddClick} />
-          <div className={styles.text_editor}>
+          <div class={styles.text_editor}>
             <TextAreaField
               name="message"
               value={message}

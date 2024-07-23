@@ -22,7 +22,7 @@ export const Message: FC<Props> = ({ content, id, time, user_id }) => {
   const isOwner = Number(user_id) === currentUser.id;
 
   return (
-    <div key={id} className={clsx(styles.message, isOwner && styles.message_owner)}>
+    <div key={id} class={clsx(styles.message, isOwner && styles.message_owner)}>
       <div>
         #{user_id} {dayjs(time).format('L LT')}
       </div>

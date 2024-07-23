@@ -15,12 +15,12 @@ export const ChatsItem: FC<Props> = ({ avatar, id, last_message, title, unread_c
     navigate(`/messenger/${id}`);
   };
   return (
-    <div className={styles.contact} onClick={onChatClick}>
+    <div class={styles.contact} onClick={onChatClick}>
       <Avatar src={avatar} alt={title} />
-      <div className={styles.info}>
+      <div class={styles.info}>
         <div classList={styles.row}>
-          <span className={styles.user_name}>{title}</span>
-          {/* <span className={styles.message_time}>{dayjs(created_by).format('L LT')}</span> */}
+          <span class={styles.user_name}>{title}</span>
+          {/* <span class={styles.message_time}>{dayjs(created_by).format('L LT')}</span> */}
         </div>
         <div classList={styles.row}>
           {last_message ? (
@@ -31,7 +31,7 @@ export const ChatsItem: FC<Props> = ({ avatar, id, last_message, title, unread_c
           ) : (
             ''
           )}
-          <span className={styles.unread_message}>{unread_count}</span>
+          <span class={styles.unread_message}>{unread_count}</span>
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ export class ProfileEdit extends Component<{}, State> {
       return <Loading />;
     } else if (user) {
       return (
-        <div className={styles.profile_edit}>
+        <div class={styles.profile_edit}>
           <Flex gap={1} isCenter isColumn>
             <AvatarProfile src={user.avatar} />
           </Flex>

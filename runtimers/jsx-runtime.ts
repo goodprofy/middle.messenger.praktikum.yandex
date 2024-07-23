@@ -1,15 +1,13 @@
-import { isDefined } from '../src/utils';
+import { Bone } from '../src/class';
 
 type ComponentConstructor = new (props: { [key: string]: any; children: any[] }) => {
-  element: HTMLElement;
-  render: () => HTMLElement;
+  element: Element;
+  render: () => Element;
 };
 
-export function h(
-  tag: keyof HTMLElementTagNameMap | Function,
-  props: { [key: string]: any },
-  ...children: any[]
-): HTMLElement | null {
+type BoneTag = ConstructorParameters<typeof Bone>[0];
+
+export function h(tag: BoneTag | Function, props: { [key: string]: any }, ...children: any[]): Element | null {
   if (typeof tag === 'function') {
     let result;
 
@@ -26,33 +24,9 @@ export function h(
     return result as unknown as HTMLElement;
   }
 
-  const element = document.createElement(tag);
+  const bone = new Bone(tag, props || {}, children || []);
 
-  Object.entries(props || {}).forEach(([key, value]) => {
-    if (key === 'ref' && typeof value === 'function') {
-      value(element);
-    } else if (key.startsWith('on') && typeof value === 'function') {
-      if (key.toLowerCase() === 'onchange') {
-        element.addEventListener('input', props[key]);
-      } else {
-        element.addEventListener(key.toLowerCase().substring(2), props[key]);
-      }
-    } else if (key === 'className' && isDefined(value)) {
-      element.classList.add(...((value as string) || '').trim().split(' '));
-    } else if (isDefined(value)) {
-      element.setAttribute(key, value);
-    }
-  });
-
-  while (element.firstChild) {
-    element.firstChild.remove();
-  }
-
-  children.flat().forEach((child: Node | Node[]) => {
-    appendChild(element, child);
-  });
-
-  return element;
+  return bone.render();
 }
 
 export function Fragment(props: { children: any[] }) {
@@ -63,14 +37,19 @@ export function Fragment(props: { children: any[] }) {
   return fragment;
 }
 
-function appendChild(parent: HTMLElement | DocumentFragment, child: Node | Node[]) {
-  if (typeof child === 'string' || typeof child === 'number') {
-    parent.append(document.createTextNode(String(child)));
-  } else if (child instanceof Node) {
+function appendChild(parent: HTMLElement | DocumentFragment, children: Node | Node[]) {
+  if (children === null) {
+    return;
+  }
+
+  if (typeof children === 'string' || typeof children === 'number') {
+    parent.append(String(children));
+  } else if (children instanceof Node) {
+    const child = document.importNode(children, true);
     parent.append(child);
-  } else if (Array.isArray(child)) {
-    child.forEach((childOfChild) => {
-      appendChild(parent, childOfChild);
+  } else if (Array.isArray(children)) {
+    children.forEach((child) => {
+      appendChild(parent, child);
     });
   }
 }

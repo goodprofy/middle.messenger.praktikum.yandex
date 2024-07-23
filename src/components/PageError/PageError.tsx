@@ -12,7 +12,7 @@ type Props = {
 export const PageError: FC<Props> = ({ subTitle, title, titleBackLink }) => {
   return (
     <Page isCentered>
-      <div className={styles.text_center}>
+      <div class={styles.text_center}>
         <Title as="h1">{title}</Title>
         <Title as="h2">{subTitle}</Title>
       </div>

@@ -6,5 +6,5 @@ type Props = {
 };
 
 export const Page: FC<PropsWithChildren<Props>> = ({ children, isCentered }) => {
-  return <div className={clsx(styles.page, isDefined(isCentered) && isCentered && styles.centered)}>{children}</div>;
+  return <div class={clsx(styles.page, isDefined(isCentered) && isCentered && styles.centered)}>{children}</div>;
 };

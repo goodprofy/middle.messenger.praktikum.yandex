@@ -78,10 +78,10 @@ export class Chat extends Component<{}, State> {
   render() {
     const { socket, chatId, users } = this.state;
     return (
-      <div className={styles.chat}>
-        <div className={styles.area}>
+      <div class={styles.chat}>
+        <div class={styles.area}>
           <Header users={users} onDeleteUserSuccess={this.onDeleteUserClick} chatId={chatId} />
-          <div className={styles.messages}>
+          <div class={styles.messages}>
             {socket ? <Messages socket={socket} onUserConnected={this.onUserConnected} /> : 'Loading...'}
           </div>
           <MessageInput onSubmit={this.onMessageSubmit} onUserAddSuccess={this.onUserAddSuccess} chatId={chatId} />

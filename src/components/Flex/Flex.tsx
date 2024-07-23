@@ -13,7 +13,7 @@ type Props = {
 export const Flex: FC<PropsWithChildren<Props>> = ({ isColumn, children, gap, mb, isCenter }) => {
   return (
     <div
-      className={clsx(
+      class={clsx(
         styles.flex,
         isDefined(isColumn) && isColumn && styles.column,
         isDefined(isCenter) && isCenter && styles.center,

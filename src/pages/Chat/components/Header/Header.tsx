@@ -32,12 +32,12 @@ export class Header extends Component<Props> {
   render() {
     const { users } = this.props;
     return (
-      <head className={styles.header}>
+      <head class={styles.header}>
         {users.map((user) => {
           return (
-            <div className={styles.user}>
-              <div className={styles.avatar} />
-              <div className={styles.name}>
+            <div class={styles.user}>
+              <div class={styles.avatar} />
+              <div class={styles.name}>
                 <div>#{user.id}</div>
                 <div>{user.login}</div>
               </div>

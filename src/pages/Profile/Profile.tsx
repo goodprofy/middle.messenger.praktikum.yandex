@@ -18,7 +18,7 @@ export const Profile = () => {
       });
   };
   return (
-    <div className={styles.profile}>
+    <div class={styles.profile}>
       <ProfileData />
 
       <div>

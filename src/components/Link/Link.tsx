@@ -24,7 +24,7 @@ export const Link: FC<Props> = ({ isError, onClick, target, title, to }) => {
       href={to}
       title={title}
       target={target}
-      className={clsx(styles.link, Boolean(isError) && styles.error)}
+      class={clsx(styles.link, Boolean(isError) && styles.error)}
       onClick={onLinkClick}
     >
       {title}

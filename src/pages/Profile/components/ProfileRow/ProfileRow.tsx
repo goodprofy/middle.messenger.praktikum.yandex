@@ -8,9 +8,9 @@ type Props = {
 
 export const ProfileRow: FC<Props> = ({ name, value }) => {
   return (
-    <div className={styles.profile_row}>
+    <div class={styles.profile_row}>
       {isDefined(name) ? <span>{name}</span> : null}
-      {isDefined(value) ? <span className={styles.value}>{value}</span> : null}
+      {isDefined(value) ? <span class={styles.value}>{value}</span> : null}
     </div>
   );
 };

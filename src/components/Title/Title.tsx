@@ -9,5 +9,5 @@ type Props = {
 
 export const Title: FC<PropsWithChildren<Props>> = ({ as = 'h1', children, isCenter }) => {
   const Tag = as;
-  return <Tag className={clsx(styles[as], isDefined(isCenter) && styles.center)}>{children}</Tag>;
+  return <Tag class={clsx(styles[as], isDefined(isCenter) && styles.center)}>{children}</Tag>;
 };

@@ -14,7 +14,7 @@ type Props = {
 export const Button: FC<Props> = ({ onClick, title, disabled, type = 'button', isFullWidth = true }) => {
   return (
     <button
-      className={clsx(style.button, isFullWidth && style.full_width, Boolean(disabled) && style.disabled)}
+      class={clsx(style.button, isFullWidth && style.full_width, Boolean(disabled) && style.disabled)}
       onClick={onClick}
       type={type}
       disabled={disabled}

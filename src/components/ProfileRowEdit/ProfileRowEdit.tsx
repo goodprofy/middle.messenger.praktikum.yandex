@@ -45,7 +45,7 @@ export class ProfileRowEdit extends Component<Props> {
     const { title, errors, type = 'text', ...inputRest } = this.props;
     return (
       <>
-        <label className={styles.profile_row_edit}>
+        <label class={styles.profile_row_edit}>
           <span>{title}</span>
           <Input
             {...inputRest}

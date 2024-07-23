@@ -1,15 +1,19 @@
 import { Component } from '../../../../class';
-import { Button, Form, ProfileRowEdit } from '../../../../components';
+import { type UpdateUserParams, client } from '../../../../client';
+import { Button, Form, InputField, ProfileRowEdit } from '../../../../components';
 import { EMAIL_REG_EXP, LOGIN_REG_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../../constants';
-import { Profile } from '../../../../types';
-import { getInputErrorMessage, isDefined } from '../../../../utils';
+import { getInputErrorMessage, isDefined, logError } from '../../../../utils';
+
+type InputFieldProps = ConstructorParameters<typeof InputField>[0];
 
 type Props = {
-  profile: Profile;
+  user: UpdateUserParams;
 };
 
 type State = {
-  errors: Record<keyof Profile, string[]>;
+  errors: Record<keyof UpdateUserParams, string[]>;
+  isSubmitting: boolean;
+  fields: Props['user'];
 };
 
 export class ProfileForm extends Component<Props, State> {
@@ -21,14 +25,30 @@ export class ProfileForm extends Component<Props, State> {
       login: [],
       phone: [],
       second_name: []
-    }
+    },
+    isSubmitting: false,
+    fields: this.props.user
   };
 
-  onFormSubmit = (values: Record<string, unknown>) => {
-    console.log(values);
+  constructor(props: Props) {
+    super(props);
+  }
+
+  onInputChannge: InputFieldProps['onChange'] = (field, value) => {
+    this.setState({ fields: { ...this.state.fields, [field]: value } });
   };
 
-  checkFormValidity = () => {};
+  onFormSubmit = () => {
+    this.setState({ isSubmitting: true });
+    client
+      .updateUser(this.state.fields)
+      .finally(() => {
+        this.setState({ isSubmitting: false });
+      })
+      .catch((err) => {
+        logError(err);
+      });
+  };
 
   checkInputValidity = (validity: ValidityState, fieldName: string | undefined) => {
     if (!isDefined(fieldName)) {
@@ -43,30 +63,30 @@ export class ProfileForm extends Component<Props, State> {
   };
 
   public render() {
-    const {
-      profile: { display_name, email, first_name, login, phone, second_name }
-    } = this.props;
-    const { errors } = this.state;
+    const { errors, isSubmitting, fields } = this.state;
+    const { display_name, email, first_name, login, phone, second_name } = fields;
     return (
-      <Form onSubmit={this.onFormSubmit} checkValidity={this.checkFormValidity}>
+      <Form onSubmit={this.onFormSubmit} checkValidity={() => {}}>
         <div>
           <ProfileRowEdit
             name="email"
-            title={email.title}
-            value={email.value}
+            title="Email"
+            value={email}
             type="email"
             pattern={EMAIL_REG_EXP.source}
             errors={errors.email}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="login"
-            title={login.title}
-            value={login.value}
+            title="Login"
+            value={login}
             type="text"
             errors={errors.login}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
             pattern={LOGIN_REG_EXP.source}
             minLength={3}
@@ -74,45 +94,49 @@ export class ProfileForm extends Component<Props, State> {
           />
           <ProfileRowEdit
             name="first_name"
-            title={first_name.title}
-            value={first_name.value}
+            title="First name"
+            value={first_name}
             type="text"
             pattern={NAME_REG_EXP.source}
             errors={errors.first_name}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="second_name"
-            title={second_name.title}
-            value={second_name.value}
+            title="Last name"
+            value={second_name}
             type="text"
             errors={errors.second_name}
             pattern={NAME_REG_EXP.source}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="display_name"
-            title={display_name.title}
-            value={display_name.value}
+            title="Display name"
+            value={display_name}
             type="text"
             errors={errors.display_name}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
           <ProfileRowEdit
             name="phone"
-            title={phone.title}
-            value={phone.value}
+            title="Phone"
+            value={phone}
             type="tel"
             pattern={PHONE_REG_EXP.source}
             errors={errors.phone}
             checkValidity={this.checkInputValidity}
+            onChange={this.onInputChannge}
             required
           />
         </div>
-        <Button title="Сохранить" type="submit" />
+        <Button title={isSubmitting ? 'Submitting...' : 'Save'} type="submit" />
       </Form>
     );
   }

@@ -1,0 +1,23 @@
+.sidebar {
+  display: flex;
+  width: 310px;
+  height: 100vh;
+  flex-direction: column;
+  padding: 21px 10px 0;
+  border-right: 1px solid #eaeaea;
+  background-color: #fbfbfb;
+}
+
+.sidebar_header {
+  padding: 0 0 1rem;
+}
+
+.sidebar_chats {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.sidebar_footer {
+  padding: 1rem 0;
+}

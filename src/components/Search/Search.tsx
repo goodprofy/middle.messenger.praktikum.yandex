@@ -1,23 +1,48 @@
-import { useUUID } from '../../hooks';
+import { Component } from '../../class';
 import { Input } from '../Input';
 import styles from './styles.module.scss';
 
-export const Search: FC = () => {
-  const id = useUUID();
-  const onInputChange = () => {};
-  const onInputFocus = () => {
-    const labelNode = document.getElementById(id);
-    labelNode?.classList.add('focus');
+type Props = {
+  onChange: (value: string) => void;
+  value: string;
+};
+
+type State = {
+  isFocus: boolean;
+};
+
+export class Search extends Component<Props, State> {
+  state: State = {
+    isFocus: false
   };
-  const onInputBlur = () => {
-    const labelNode = document.getElementById(id);
-    labelNode?.classList.remove('focus');
+  constructor(props: Props) {
+    super(props);
+  }
+  onInputChange = (value: string | number) => {
+    this.props.onChange(String(value));
+  };
+  onInputFocus = () => {
+    this.setState({ isFocus: true });
+  };
+  onInputBlur = () => {
+    this.setState({ isFocus: false });
   };
 
-  return (
-    <label id={id} className={styles.search}>
-      <Input value="" type="text" onChange={onInputChange} onFocus={onInputFocus} onBlur={onInputBlur} />
-      <span className={styles.label}>Поиск</span>
-    </label>
-  );
-};
+  render(): JSX.Element | null {
+    const { value } = this.props;
+    const { isFocus } = this.state;
+    return (
+      <label className={styles.search}>
+        <Input
+          name="search"
+          value={value}
+          type="search"
+          onChange={this.onInputChange}
+          onFocus={this.onInputFocus}
+          onBlur={this.onInputBlur}
+        />
+        {!isFocus ? <span className={styles.label}>Search</span> : ''}
+      </label>
+    );
+  }
+}

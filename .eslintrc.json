@@ -23,7 +23,8 @@
         "varsIgnorePattern": "^_",
         "ignoreRestSiblings": true
       }
-    ]
+    ],
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }]
   },
   "ignorePatterns": ["src/**/*.test.ts", "server.js", "runtimers", "jest.config.ts", "dist"]
 }

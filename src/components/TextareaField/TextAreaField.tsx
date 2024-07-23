@@ -49,7 +49,7 @@ export class TextAreaField extends Component<Props, State> {
   };
 
   render() {
-    const { value, name, label } = this.props;
+    const { value, name, label, onKeyPress, ...rest } = this.props;
     const { hasFocus } = this.state;
     const hasValue = isDefined(value) && value.length > 0;
     const isActive = hasValue || hasFocus;
@@ -60,11 +60,13 @@ export class TextAreaField extends Component<Props, State> {
           ref={(el) => {
             this.ref = el;
           }}
+          {...rest}
           value={value}
           name={name}
           onChange={this.onInputChange}
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
+          onKeyPress={onKeyPress}
         />
         <span className={styles.label}>{label}</span>
       </label>

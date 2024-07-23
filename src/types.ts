@@ -1,10 +1,3 @@
-type ProfileItem = { title: string; value: string };
-
-export type Profile = {
-  email: ProfileItem;
-  login: ProfileItem;
-  first_name: ProfileItem;
-  second_name: ProfileItem;
-  display_name: ProfileItem;
-  phone: ProfileItem;
+export type NonNullableObject<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
 };

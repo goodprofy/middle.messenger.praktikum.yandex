@@ -1,6 +1,6 @@
 export * from './AvatarEdit';
 export * from './Chat';
-export * from './Chats';
+export * from './Messenger';
 export * from './Home';
 export * from './NotFound';
 export * from './Profile';

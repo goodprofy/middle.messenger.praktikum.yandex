@@ -69,7 +69,6 @@ export class Bone<T = Element> {
       } else if (typeof value === 'function') {
         const eventName = prop.startsWith('on') ? prop.toLowerCase().substring(2) : prop.toLowerCase();
         parent.addEventListener(eventName, value);
-        console.log({ eventName, value });
       } else {
         parent.setAttribute(prop, value.toString());
       }

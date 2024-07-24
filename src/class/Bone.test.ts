@@ -136,7 +136,7 @@ describe('class Bone', () => {
 
   it('should be form submit after button click', () => {
     const button = new Bone('button', { type: 'submit' }, null);
-    const onSubmit = jest.fn();
+    const onSubmit = jest.fn((e) => e.preventDefault());
     const form = new Bone(
       'form',
       {

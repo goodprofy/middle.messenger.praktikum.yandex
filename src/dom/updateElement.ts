@@ -30,12 +30,16 @@ export function updateElement(
   }
 
   if (typeof newNode.type === 'function') {
-    const component = (oldNode.component as Component) || new (newNode.type as any)(newNode.props);
-    component.props = newNode.props;
-    const renderedNode = component.render();
-    updateElement(element as HTMLElement, renderedNode, oldNode.renderedNode);
-    component.componentDidUpdate();
-    newNode.component = component;
+    let renderedNode: VNode;
+    if (newNode.type.prototype instanceof Component) {
+      const component = (oldNode?.component as Component) || new (newNode.type as any)(newNode.props);
+      component.props = newNode.props;
+      renderedNode = component.render();
+      newNode.component = component;
+    } else {
+      renderedNode = (newNode.type as Function)(newNode.props);
+    }
+    updateElement(element as HTMLElement, renderedNode, oldNode?.renderedNode, 0);
     newNode.renderedNode = renderedNode;
   } else if (newNode.type === 'TEXT_ELEMENT') {
     if (newNode.props.nodeValue !== oldNode.props.nodeValue) {

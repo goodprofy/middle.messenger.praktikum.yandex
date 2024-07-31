@@ -1,4 +1,4 @@
-import { updateElement } from '../render';
+import { updateElement } from '../dom';
 import type { Props, VNode } from '../types';
 import { deepEqual } from '../utils';
 

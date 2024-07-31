@@ -1,121 +1,57 @@
-import type { NonNullableObject } from '../types';
-import { isEqual } from '../utils';
+import { updateElement } from '../render';
+import type { Props, VNode } from '../types';
+import { deepEqual } from '../utils';
 
-type SetStateCallback<S> = (state: S) => void;
-export class Component<Props = Record<string, unknown>, State = Record<string, unknown>> {
-  props: Props;
-  state: State;
-  element: HTMLElement | null = null;
+export abstract class Component<P = Props, S = Props> {
+  props: P;
+  state: S;
+  prevState: S;
+  vnode: VNode | null = null;
+  updateScheduled: boolean = false;
+  isMounted: boolean = false;
 
-  constructor(props: Props) {
+  constructor(props: P = {} as P) {
     this.props = props;
-    this.state = {} as State;
+    this.state = {} as S;
+    this.prevState = {} as S;
   }
 
-  protected setState = (newState: Partial<State>, callback?: SetStateCallback<State>) => {
-    const prevState = { ...this.state };
-    this.state = { ...this.state, ...newState };
-
-    if (
-      !isEqual<NonNullableObject<State>>(prevState as NonNullableObject<State>, newState as NonNullableObject<State>)
-    ) {
-      this.update();
-    }
-    if (callback) {
-      callback(this.state);
-    }
-  };
-
-  mount() {}
-  unmount() {}
-
-  protected update() {
-    const oldElement = this.element;
-    const newElement = this.render() as unknown as HTMLElement | null; //TODO: Fix me
-
-    //console.log('old', oldElement.__componentInstance);
-    //console.log('new', newElement.__componentInstance);
-
-    console.log('update');
-
-    if (oldElement && newElement && oldElement.parentNode) {
-      this.updateElement(oldElement, newElement);
-    } else if (newElement) {
-      this.element = newElement;
-      this.mount();
-    }
-  }
-
-  private updateElement(mountedElement: HTMLElement, newElement: HTMLElement) {
-    this.updateAttributes(mountedElement, newElement);
-    this.updateChildren(mountedElement, newElement);
-  }
-
-  private updateAttributes(mountedElement: HTMLElement, newElement: HTMLElement) {
-    const newAttrs = Array.from(newElement.attributes);
-
-    newAttrs.forEach((attr) => {
-      mountedElement.setAttribute(attr.name, attr.value);
-    });
-
-    const oldAttrs = Array.from(mountedElement.attributes);
-    oldAttrs.forEach((attr) => {
-      if (!newElement.hasAttribute(attr.name)) {
-        mountedElement.removeAttribute(attr.name);
-      }
-    });
-
-    const isInputElement =
-      (mountedElement.tagName === 'INPUT' && newElement.tagName === 'INPUT') ||
-      (mountedElement.tagName === 'TEXTAREA' && newElement.tagName === 'TEXTAREA');
-
-    if (isInputElement) {
-      const newInput = newElement as HTMLInputElement | HTMLTextAreaElement;
-      const mountedInput = mountedElement as HTMLInputElement | HTMLTextAreaElement;
-      if (newInput.type === 'text' || newInput.tagName === 'TEXTAREA') {
-        if (mountedInput.value !== newInput.value) {
-          mountedInput.value = newInput.value;
+  setState(newState: Partial<S>, callback?: () => void) {
+    const nextState = { ...this.state, ...newState };
+    if (!this.updateScheduled) {
+      this.updateScheduled = true;
+      Promise.resolve().then(() => {
+        this.updateScheduled = false;
+        if (this.isMounted && this.shouldComponentUpdate(this.props, nextState)) {
+          this.prevState = this.state;
+          this.state = nextState;
+          this.update();
+          if (callback) callback();
         }
-      } else if (mountedInput instanceof HTMLInputElement && newInput instanceof HTMLInputElement) {
-        if (mountedInput.type === 'checkbox' || mountedInput.type === 'radio') {
-          mountedInput.checked = newInput.checked;
-        }
-      }
+      });
     }
   }
 
-  private updateChildren(mountedElement: HTMLElement, newElement: HTMLElement) {
-    const mountedChildren = Array.from(mountedElement.childNodes);
-    const newChildren = Array.from(newElement.childNodes);
+  shouldComponentUpdate(nextProps: P, nextState: S): boolean {
+    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+  }
 
-    while (mountedChildren.length > newChildren.length) {
-      const lastChild = mountedChildren.pop();
-      if (lastChild) {
-        mountedElement.removeChild(lastChild);
-      }
+  componentDidMount() {}
+
+  componentDidUpdate() {}
+
+  componentWillUnmount() {
+    this.isMounted = false;
+  }
+
+  update() {
+    if (this.isMounted && this.vnode && this.vnode.element) {
+      const nextVNode = this.render();
+      updateElement(this.vnode.element, nextVNode, this.vnode);
+      this.vnode = { ...nextVNode, element: this.vnode.element, component: this };
+      this.componentDidUpdate();
     }
-
-    newChildren.forEach((newChild, index) => {
-      const existingChild = mountedChildren[index];
-
-      if (!existingChild) {
-        mountedElement.appendChild(newChild);
-      } else if (existingChild.nodeType === newChild.nodeType) {
-        if (existingChild.nodeType === Node.ELEMENT_NODE) {
-          // if (oldChild.nodeType === newChild.nodeType && oldChild.nodeName === newChild.nodeName) {
-          this.updateElement(existingChild as HTMLElement, newChild as HTMLElement);
-        } else if (existingChild.nodeValue !== newChild.nodeValue) {
-          mountedElement.replaceChild(newChild, existingChild);
-          this.unmount();
-        }
-      } else {
-        mountedElement.replaceChild(newChild, existingChild);
-        this.unmount();
-      }
-    });
   }
 
-  render(): JSX.Element | null {
-    return null;
-  }
+  abstract render(): VNode;
 }

@@ -1,3 +1,12 @@
-export type NonNullableObject<T> = {
-  [P in keyof T]: NonNullable<T[P]>;
-};
+import { Component } from './class';
+
+export type Props = Record<string, any>;
+
+export interface VNode {
+  type: string | Function;
+  props: Props;
+  children: VNode[];
+  element?: HTMLElement | Text;
+  component?: Component;
+  renderedNode?: VNode;
+}

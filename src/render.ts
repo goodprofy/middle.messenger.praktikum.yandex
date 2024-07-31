@@ -47,14 +47,19 @@ export function createDOMElement(vnode: VNode): HTMLElement | Text {
   return element;
 }
 
-export function updateElement(element: HTMLElement | Text, newNode: VNode | undefined, oldNode: VNode | undefined) {
+export function updateElement(
+  parentElement: HTMLElement,
+  newNode: VNode | undefined,
+  oldNode: VNode | undefined,
+  index: number = 0
+) {
   if (!newNode && oldNode) {
-    element.remove();
+    parentElement.removeChild(parentElement.childNodes[index]);
     return;
   }
 
   if (newNode && !oldNode) {
-    element.parentNode?.appendChild(createDOMElement(newNode));
+    parentElement.appendChild(createDOMElement(newNode));
     return;
   }
 
@@ -62,32 +67,24 @@ export function updateElement(element: HTMLElement | Text, newNode: VNode | unde
     return;
   }
 
+  const element = parentElement.childNodes[index] as HTMLElement | Text;
+
   if (newNode.type !== oldNode.type) {
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
-    }
-    const newElement = createDOMElement(newNode);
-    while (newElement.firstChild) {
-      element.appendChild(newElement.firstChild);
-    }
-    updateProps(element as HTMLElement, newNode.props, oldNode.props);
+    parentElement.replaceChild(createDOMElement(newNode), element);
     return;
   }
 
   if (typeof newNode.type === 'function') {
-    if (newNode.type.prototype instanceof Component) {
-      const component = oldNode.component as Component;
-      component.props = newNode.props;
-      const renderedNode = component.render();
-      updateElement(element as HTMLElement, renderedNode, oldNode.renderedNode);
-      component.componentDidUpdate();
-    } else {
-      const renderedNode = (newNode.type as Function)(newNode.props);
-      updateElement(element as HTMLElement, renderedNode, oldNode.renderedNode);
-    }
+    const component = (oldNode.component as Component) || new (newNode.type as any)(newNode.props);
+    component.props = newNode.props;
+    const renderedNode = component.render();
+    updateElement(element as HTMLElement, renderedNode, oldNode.renderedNode);
+    component.componentDidUpdate();
+    newNode.component = component;
+    newNode.renderedNode = renderedNode;
   } else if (newNode.type === 'TEXT_ELEMENT') {
     if (newNode.props.nodeValue !== oldNode.props.nodeValue) {
-      (element as Text).nodeValue = newNode.props.nodeValue;
+      element.nodeValue = newNode.props.nodeValue;
     }
   } else {
     updateProps(element as HTMLElement, newNode.props, oldNode.props);
@@ -95,14 +92,13 @@ export function updateElement(element: HTMLElement | Text, newNode: VNode | unde
     const newChildren = newNode.children || [];
     const oldChildren = oldNode.children || [];
     const maxLength = Math.max(newChildren.length, oldChildren.length);
+
     for (let i = 0; i < maxLength; i++) {
-      if (i < newChildren.length && i < oldChildren.length) {
-        updateElement((element as HTMLElement).childNodes[i] as HTMLElement | Text, newChildren[i], oldChildren[i]);
-      } else if (i < newChildren.length) {
-        (element as HTMLElement).appendChild(createDOMElement(newChildren[i]));
-      } else {
-        (element as HTMLElement).removeChild((element as HTMLElement).childNodes[i]);
-      }
+      updateElement(element as HTMLElement, newChildren[i], oldChildren[i], i);
+    }
+
+    while (element.childNodes.length > newChildren.length) {
+      element.removeChild(element.lastChild!);
     }
   }
 }
@@ -139,10 +135,10 @@ function updateProps(element: HTMLElement, newProps: Record<string, any>, oldPro
 export function render(vnode: VNode, container: HTMLElement) {
   const oldVNode = container._vnode;
   if (oldVNode) {
-    updateElement(container.firstChild as HTMLElement | Text, vnode, oldVNode);
+    updateElement(container, vnode, oldVNode, 0);
   } else {
-    const element = createDOMElement(vnode);
-    container.appendChild(element);
+    container.innerHTML = '';
+    container.appendChild(createDOMElement(vnode));
   }
   container._vnode = vnode;
 }

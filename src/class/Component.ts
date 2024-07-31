@@ -47,8 +47,13 @@ export abstract class Component<P = Props, S = Props> {
   update() {
     if (this.isMounted && this.vnode && this.vnode.element) {
       const nextVNode = this.render();
-      updateElement(this.vnode.element, nextVNode, this.vnode);
-      this.vnode = { ...nextVNode, element: this.vnode.element, component: this };
+      updateElement(
+        this.vnode.element.parentElement!,
+        nextVNode,
+        this.vnode.renderedNode,
+        Array.from(this.vnode.element.parentElement!.childNodes).indexOf(this.vnode.element)
+      );
+      this.vnode = { ...this.vnode, renderedNode: nextVNode };
       this.componentDidUpdate();
     }
   }

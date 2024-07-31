@@ -1,6 +1,6 @@
 import type { Props, VNode } from '../src/types';
 
-export function h(type: string | Function, props: Props, ...children: any[]): VNode {
+export function h(type: string | Function, props: Props, ...children: VNode[]): VNode {
   return {
     type,
     props: props || {},

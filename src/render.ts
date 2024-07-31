@@ -1,26 +1,33 @@
 import { Component } from './class';
 import type { VNode } from './types';
 
-export function createDOMElement(vnode: VNode): HTMLElement | Text {
+export function createDOMElement(vnode: VNode | undefined): HTMLElement | Text | null {
+  if (!vnode) {
+    return null;
+  }
+
   if (vnode.type === 'TEXT_ELEMENT') {
     return document.createTextNode(vnode.props.nodeValue);
   }
 
   if (typeof vnode.type === 'function') {
+    let renderedNode: VNode;
     if (vnode.type.prototype instanceof Component) {
       const component = new (vnode.type as any)(vnode.props);
       vnode.component = component;
-      const renderedNode = component.render();
+      renderedNode = component.render();
       vnode.renderedNode = renderedNode;
       const element = createDOMElement(renderedNode);
-      component.vnode = { ...vnode, element };
-      component.isMounted = true;
-      setTimeout(() => {
-        component.componentDidMount();
-      }, 0);
+      if (element) {
+        component.vnode = { ...vnode, element };
+        component.isMounted = true;
+        setTimeout(() => {
+          component.componentDidMount();
+        }, 0);
+      }
       return element;
     } else {
-      const renderedNode = (vnode.type as Function)(vnode.props);
+      renderedNode = (vnode.type as Function)({ ...vnode.props, children: vnode.children });
       vnode.renderedNode = renderedNode;
       return createDOMElement(renderedNode);
     }
@@ -28,20 +35,28 @@ export function createDOMElement(vnode: VNode): HTMLElement | Text {
 
   const element = document.createElement(vnode.type as string);
 
-  Object.entries(vnode.props).forEach(([name, value]) => {
+  Object.entries(vnode.props || {}).forEach(([name, value]) => {
     if (name.startsWith('on') && name.toLowerCase() in window) {
       element.addEventListener(name.toLowerCase().substr(2), value as EventListener);
     } else if (name !== 'children') {
-      if (name === 'value' && element instanceof HTMLInputElement) {
-        element.value = value as string;
+      if (name === 'className') {
+        element.setAttribute('class', value as string);
       } else {
         element.setAttribute(name, value as string);
       }
     }
   });
 
-  vnode.children.forEach((child) => {
-    element.appendChild(createDOMElement(child));
+  const children = vnode.props.children || vnode.children || [];
+  (Array.isArray(children) ? children : [children]).forEach((child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      element.appendChild(document.createTextNode(child.toString()));
+    } else {
+      const childElement = createDOMElement(child);
+      if (childElement) {
+        element.appendChild(childElement);
+      }
+    }
   });
 
   return element;
@@ -135,10 +150,12 @@ function updateProps(element: HTMLElement, newProps: Record<string, any>, oldPro
 export function render(vnode: VNode, container: HTMLElement) {
   const oldVNode = container._vnode;
   if (oldVNode) {
-    updateElement(container, vnode, oldVNode, 0);
+    updateElement(container, vnode, oldVNode);
   } else {
-    container.innerHTML = '';
-    container.appendChild(createDOMElement(vnode));
+    const element = createDOMElement(vnode);
+    if (element) {
+      container.appendChild(element);
+    }
   }
   container._vnode = vnode;
 }

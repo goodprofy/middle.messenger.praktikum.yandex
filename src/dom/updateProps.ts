@@ -1,17 +1,23 @@
 import { VNode } from '../types';
 import { isDefined } from '../utils';
 
-export function updateProps(element: HTMLElement | Text, newProps: VNode['props'], oldProps: VNode['props']) {
+export function updateProps(
+  element: HTMLElement | SVGElement | Text,
+  newProps: VNode['props'],
+  oldProps: VNode['props']
+) {
+  console.group('updateProps');
+  console.info({ oldProps, newProps });
   if (!(element instanceof HTMLElement)) {
+    console.groupEnd();
     return;
   }
 
   const allProps = { ...oldProps, ...newProps };
 
-  console.log({ allProps });
-
   Object.keys(allProps).forEach((name) => {
     if (name === 'children') {
+      console.groupEnd();
       return;
     }
 
@@ -20,9 +26,9 @@ export function updateProps(element: HTMLElement | Text, newProps: VNode['props'
 
     if (name === 'ref') {
       newProps[name](element);
-    } else if (name.startsWith('on') && name.toLowerCase() in window) {
+    } else if (name.startsWith('on')) {
       const eventName = name.toLowerCase().substring(2);
-      if (newProps[name] !== oldProps[name]) {
+      if (newValue !== oldValue) {
         if (isDefined(oldValue)) {
           element.removeEventListener(eventName, oldValue);
         }
@@ -30,6 +36,18 @@ export function updateProps(element: HTMLElement | Text, newProps: VNode['props'
           console.log({ newValue });
           element.addEventListener(eventName, newValue);
         }
+      }
+    } else if (name === 'style') {
+      if (typeof newValue === 'object') {
+        Object.entries(newValue).forEach(([prop, value]) => {
+          if (element.style[prop as any] !== value) {
+            element.style[prop as any] = value;
+          }
+        });
+      } else if (typeof newValue === 'string') {
+        element.setAttribute('style', newValue);
+      } else {
+        element.removeAttribute('style');
       }
     } else if (name === 'class') {
       if (isDefined(newValue)) {
@@ -49,4 +67,5 @@ export function updateProps(element: HTMLElement | Text, newProps: VNode['props'
       }
     }
   });
+  console.groupEnd();
 }

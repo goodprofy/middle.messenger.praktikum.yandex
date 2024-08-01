@@ -1,5 +1,4 @@
 export * from './Component';
-export * from './Bone';
 export * from './Error';
 export * from './EventBus';
 export * from './HTTPClient';

@@ -1,24 +1,25 @@
 import type { Props, VNode } from '../src/types';
 
-export function h(type: string | Function, props: Props | null, ...children: any[]): VNode {
-  return {
+export function h(type: string | Function, props: Props, ...children: VNode['children']): VNode {
+  const result: VNode = {
     type,
-    props: { ...(props || {}), children: children.length === 1 ? children[0] : children },
-    children: children
-      .flat()
-      .map((child) =>
-        typeof child === 'string' || typeof child === 'number' || typeof child === 'boolean'
-          ? { type: 'TEXT_ELEMENT', props: { nodeValue: child.toString() }, children: [] }
-          : child || null
-      )
-      .filter((child) => child !== null && child !== undefined && child !== false)
+    props: props || {},
+    children: children || []
   };
+
+  console.info('jsx: h', result);
+
+  return result;
 }
 
-export function Fragment(props: Props): VNode {
-  return {
-    type: 'fragment',
-    props,
+export function Fragment(props: { children: VNode['children'] }): VNode {
+  const result: VNode = {
+    type: 'FRAGMENT',
+    props: props || {},
     children: props.children || []
   };
+
+  console.info('jsx: fragment', result);
+
+  return result;
 }

@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-declare namespace JSX {
-  interface Element {
-    tag: keyof HTMLElementTagNameMap | FC<any>;
-    props: { [key: string]: any };
-    children: any[];
+import type { Props, VNode } from './types';
+
+declare global {
+  interface HTMLElement {
+    _vnode?: VNode;
   }
+
+  interface SVGSVGElement {
+    _vnode?: VNode;
+  }
+}
+
+declare namespace JSX {
+  interface Element extends VNode {}
 
   interface IntrinsicElements extends IntrinsicElementMap {}
 
@@ -16,14 +25,6 @@ declare namespace JSX {
     };
   };
 }
-
-declare type FC<P = Record<string, unknown>> = {
-  (props: P): JSX.Element | null;
-};
-
-declare type PropsWithChildren<P = unknown> = P & {
-  children?: JSX.Element | JSX.Element[];
-};
 
 declare type ChangeEvent<T> = {
   target: {
@@ -37,3 +38,6 @@ declare type ComponentProps<T extends keyof JSX.IntrinsicElements | FC<any>> =
     : T extends keyof JSX.IntrinsicElements
       ? JSX.IntrinsicElements[T]
       : Record<string, unknown>;
+
+declare type FC<P = Props> = (props: P) => VNode | null;
+declare type PropsWithChildren<P = Props> = P & { children?: VNode[] };

@@ -1,50 +1,85 @@
 import { Component } from '../class';
 import { VNode } from '../types';
+import { updateProps } from './updateProps';
 
-export function createElement(vnode: VNode): HTMLElement | Text {
-  if (vnode.type === 'TEXT_ELEMENT') {
-    return document.createTextNode(vnode.props.nodeValue);
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+export function createElement(vnode: VNode): HTMLElement | SVGElement | DocumentFragment | Text {
+  console.group('createElement');
+  console.log({ vnode });
+
+  if (vnode === null) {
+    console.info('isNull');
+    const element = document.createTextNode('');
+    element._vnode = { element };
+    console.groupEnd();
+    return element;
+  }
+
+  const isText = typeof vnode === 'string' || typeof vnode === 'number' || typeof vnode === 'boolean';
+  if (isText) {
+    console.info('isText');
+    const element = document.createTextNode(String(vnode));
+    element._vnode = { element };
+    console.groupEnd();
+    return element;
   }
 
   if (typeof vnode.type === 'function') {
     if (vnode.type.prototype instanceof Component) {
+      console.info('isComponent');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const component = new (vnode.type as any)(vnode.props);
+      const props = { ...vnode.props, children: vnode.children };
+      const component = new (vnode.type as Function)(props);
       vnode.component = component;
       const renderedNode = component.render();
       vnode.renderedNode = renderedNode;
       const element = createElement(renderedNode);
-      component.vnode = { ...vnode, element };
+      vnode.element = element;
+      component.vnode = vnode;
       component.isMounted = true;
+
       setTimeout(() => {
         component.componentDidMount();
       }, 0);
+
+      element._vnode = vnode;
+
       return element;
     } else {
       // eslint-disable-next-line @typescript-eslint/ban-types
-      const renderedNode = (vnode.type as Function)(vnode.props);
+      const props = { ...vnode.props, children: vnode.children };
+      const renderedNode = vnode.type(props);
       vnode.renderedNode = renderedNode;
       return createElement(renderedNode);
     }
   }
 
-  const element = document.createElement(vnode.type as string);
+  if (vnode.type === 'FRAGMENT') {
+    const element = document.createDocumentFragment();
+    vnode.children.forEach((child) => {
+      const newChild = createElement(child);
+      element.appendChild(newChild);
+    });
 
-  Object.entries(vnode.props).forEach(([name, value]) => {
-    if (name.startsWith('on') && name.toLowerCase() in window) {
-      element.addEventListener(name.toLowerCase().substr(2), value as EventListener);
-    } else if (name !== 'children') {
-      if (name === 'value' && element instanceof HTMLInputElement) {
-        element.value = value as string;
-      } else {
-        element.setAttribute(name, value as string);
-      }
-    }
-  });
+    element._vnode = { ...vnode, element };
+
+    //console.log('----element', element);
+
+    console.groupEnd();
+    return element;
+  }
+
+  const element =
+    vnode.type === 'svg' ? document.createElementNS(SVG_NS, vnode.type) : document.createElement(vnode.type);
+  updateProps(element, vnode.props, {});
 
   vnode.children.forEach((child) => {
     element.appendChild(createElement(child));
   });
 
+  element._vnode = { ...vnode, element };
+
+  console.groupEnd();
   return element;
 }

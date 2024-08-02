@@ -51,7 +51,7 @@ export function updateProps(
       }
     } else if (name === 'class') {
       if (isDefined(newValue)) {
-        element.setAttribute('class', newValue);
+        element.className = newValue;
       } else {
         element.removeAttribute('class');
       }

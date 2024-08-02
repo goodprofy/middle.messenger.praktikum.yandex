@@ -3,11 +3,12 @@ import { isDefined } from '../utils';
 
 export function updateProps(
   element: HTMLElement | SVGElement | Text,
-  newProps: VNode['props'],
-  oldProps: VNode['props']
+  newProps: VNode['props'] = {},
+  oldProps: VNode['props'] = {}
 ) {
   console.group('updateProps');
-  console.info({ oldProps, newProps });
+  console.log('element', element.outerHTML);
+  console.log({ newProps, oldProps });
   if (!(element instanceof HTMLElement)) {
     console.groupEnd();
     return;
@@ -24,17 +25,16 @@ export function updateProps(
     const oldValue = oldProps[name];
     const newValue = newProps[name];
 
-    if (name === 'ref') {
-      newProps[name](element);
-    } else if (name.startsWith('on')) {
+    if (name === 'ref' && typeof newValue === 'function') {
+      newValue(element);
+    } else if (name.startsWith('on') && typeof newValue === 'function') {
       const eventName = name.toLowerCase().substring(2);
       if (newValue !== oldValue) {
         if (isDefined(oldValue)) {
-          element.removeEventListener(eventName, oldValue);
+          element.removeEventListener(eventName, oldValue as EventListener);
         }
         if (isDefined(newValue)) {
-          console.log({ newValue });
-          element.addEventListener(eventName, newValue);
+          element.addEventListener(eventName, newValue as EventListener);
         }
       }
     } else if (name === 'style') {

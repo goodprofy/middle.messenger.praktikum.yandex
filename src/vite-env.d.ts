@@ -29,6 +29,7 @@ declare namespace JSX {
 declare type ChangeEvent<T> = {
   target: {
     value: T;
+    valueAsNumber: T;
   };
 };
 

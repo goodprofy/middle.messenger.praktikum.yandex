@@ -1,12 +1,11 @@
 import { Component } from '../class';
-import { VNode } from '../types';
+import type { VNode } from '../types';
 import { updateProps } from './updateProps';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export function createElement(vnode: VNode): HTMLElement | SVGElement | DocumentFragment | Text {
   console.group('createElement');
-  console.log({ vnode });
 
   if (vnode === null) {
     console.info('isNull');
@@ -41,17 +40,20 @@ export function createElement(vnode: VNode): HTMLElement | SVGElement | Document
 
       setTimeout(() => {
         component.componentDidMount();
+        component.parentNode = element.parentNode;
       }, 0);
 
       element._vnode = vnode;
 
       return element;
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-types
+      console.info('isFunction');
       const props = { ...vnode.props, children: vnode.children };
       const renderedNode = vnode.type(props);
       vnode.renderedNode = renderedNode;
-      return createElement(renderedNode);
+      const element = createElement(renderedNode);
+      element._vnode = vnode;
+      return element;
     }
   }
 
@@ -64,18 +66,18 @@ export function createElement(vnode: VNode): HTMLElement | SVGElement | Document
 
     element._vnode = { ...vnode, element };
 
-    //console.log('----element', element);
-
     console.groupEnd();
     return element;
   }
 
   const element =
     vnode.type === 'svg' ? document.createElementNS(SVG_NS, vnode.type) : document.createElement(vnode.type);
-  updateProps(element, vnode.props, {});
 
-  vnode.children.forEach((child) => {
-    element.appendChild(createElement(child));
+  updateProps(element, vnode.props);
+
+  vnode.children?.forEach((child) => {
+    const newChild = createElement(child);
+    element.appendChild(newChild);
   });
 
   element._vnode = { ...vnode, element };

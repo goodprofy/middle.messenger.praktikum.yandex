@@ -12,18 +12,17 @@ export function updateElement(
   vnode: VNode = undefined
 ): void {
   console.group('updateElement');
-  console.info({ newNode, oldNode, index });
+  console.log('Updating element at index:', index);
+  console.log('New node:', newNode);
+  console.log('Old node:', oldNode);
 
   if (!isDefined(newNode) && oldNode) {
-    console.info('removeChild');
     parentElement.removeChild(parentElement.childNodes[index]);
     console.groupEnd();
     return;
   }
 
   if (newNode && !isDefined(oldNode)) {
-    console.info('newNode && !oldNode');
-    console.info('appendChild');
     parentElement.appendChild(createElement(newNode));
     console.groupEnd();
     return;
@@ -35,33 +34,35 @@ export function updateElement(
     return;
   }
 
+  if (!parentElement || !parentElement.childNodes) {
+    console.warn('Parent element or its childNodes are undefined');
+    console.groupEnd();
+    return;
+  }
+
+  if (index >= parentElement.childNodes.length) {
+    console.warn('Index is out of bounds for childNodes');
+    console.groupEnd();
+    return;
+  }
+
   const element = parentElement.childNodes[index] as HTMLElement | Text;
 
   if (newNode.type !== oldNode.type) {
     console.info('newNode.type !== oldNode.type');
     const newElement = createElement(newNode) as HTMLElement;
-    console.info('vnode', vnode?.element?.innerHTML);
-    console.info('element', element?.innerHTML);
-    console.info('newElement', newElement.innerHTML);
-    console.info('parentElement old', parentElement.innerHTML);
     parentElement.replaceChild(newElement, element);
     if (isDefined(vnode)) {
       vnode.element = newElement;
     }
-    console.info('parentElement new', parentElement.innerHTML);
     console.groupEnd();
     return;
   }
 
   const isText = typeof newNode === 'string' || typeof newNode === 'number' || typeof newNode === 'boolean';
   if (isText) {
-    console.info('isText');
-    console.info(newNode, oldNode);
     if (newNode !== oldNode) {
-      console.info('newNode !== oldNode');
-      console.info(element.textContent);
       element.nodeValue = newNode;
-      console.info(element.textContent);
     }
     return;
   }
@@ -84,25 +85,21 @@ export function updateElement(
     console.info('isVNode');
     updateProps(element, newNode.props, oldNode.props);
 
-    console.log({ newNode });
-    console.log({ oldNode });
-
     const newChildren = newNode.children;
     const oldChildren = oldNode.children;
     const maxLength = Math.max(newChildren.length, oldChildren.length);
-
-    console.log({ newChildren });
-    console.log({ oldChildren });
-    console.log({ maxLength });
 
     for (let i = 0; i < maxLength; i++) {
       updateElement(element, newChildren[i], oldChildren[i], i);
     }
 
-    while (element.childNodes.length > newChildren.length) {
-      console.info('removeChild', element.lastChild?.textContent);
-      element.removeChild(element.lastChild!);
+    if (element && element.childNodes) {
+      while (element.childNodes?.length > newChildren.length) {
+        console.info('removeChild', element.lastChild?.textContent);
+        element.removeChild(element.lastChild!);
+      }
     }
   }
+
   console.groupEnd();
 }

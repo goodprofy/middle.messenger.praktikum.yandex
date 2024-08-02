@@ -4,7 +4,7 @@ export function h(type: string | Function, props: Props, ...children: VNode['chi
   const result: VNode = {
     type,
     props: props || {},
-    children: children || []
+    children: children.flat() || []
   };
 
   console.info('jsx: h', result);
@@ -16,7 +16,7 @@ export function Fragment(props: { children: VNode['children'] }): VNode {
   const result: VNode = {
     type: 'FRAGMENT',
     props: props || {},
-    children: props.children || []
+    children: props.children.flat() || []
   };
 
   console.info('jsx: fragment', result);

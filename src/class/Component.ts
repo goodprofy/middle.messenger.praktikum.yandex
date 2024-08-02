@@ -7,11 +7,13 @@ export abstract class Component<P = Props, S = Props> {
   state: S;
   prevState: S;
   vnode: VNode | null = null;
+  element: HTMLElement = null;
+  parentNode: HTMLElement = null;
   updateScheduled: boolean = false;
   isMounted: boolean = false;
 
   constructor(props: P = {} as P) {
-    console.log('constructor');
+    console.log('component constructor');
     this.props = props;
     this.state = {} as S;
     this.prevState = {} as S;
@@ -21,14 +23,16 @@ export abstract class Component<P = Props, S = Props> {
     const nextState = { ...this.state, ...newState };
     if (!this.updateScheduled) {
       this.updateScheduled = true;
+
+      //TODO vitest problem with awaits
       /* queueMicrotask(() => {
-        this.updateScheduled = false;
-        if (this.isMounted && this.shouldComponentUpdate(this.props, nextState)) {
+        if (this.isMounted && this.shouldUpdate(this.props, nextState)) {
           this.prevState = this.state;
           this.state = nextState;
           this.update();
           if (callback) callback();
         }
+        this.updateScheduled = false;
       }); */
 
       if (this.isMounted && this.shouldUpdate(this.props, nextState)) {
@@ -51,8 +55,6 @@ export abstract class Component<P = Props, S = Props> {
 
   updated() {
     console.info('component updated');
-    const rootNode = document.getElementById('root');
-    console.log(rootNode.innerHTML);
   }
 
   componentWillUnmount() {
@@ -65,9 +67,6 @@ export abstract class Component<P = Props, S = Props> {
     if (this.isMounted && this.vnode && this.vnode.element) {
       const nextVNode = this.render();
 
-      console.log('before update');
-      console.log('element', this.vnode.element?.innerHTML);
-      console.log('parentElement', this.vnode.element.parentElement?.innerHTML);
       updateElement(
         this.vnode.element.parentElement!,
         nextVNode,
@@ -77,9 +76,6 @@ export abstract class Component<P = Props, S = Props> {
       );
       this.vnode = { ...this.vnode, renderedNode: nextVNode };
 
-      console.log('after update');
-      console.log('element', this.vnode.element?.innerHTML);
-      console.log('parentElement', this.vnode.element.parentElement?.innerHTML);
       if (this.vnode.element.parentElement == null) {
         throw new Error('Parent element lost');
       }

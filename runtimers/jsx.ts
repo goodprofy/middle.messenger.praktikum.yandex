@@ -1,6 +1,6 @@
-import type { Props, VNode } from '../src/types';
+import type { VNode } from '../src/types';
 
-export function h(type: string | Function, props: Props, ...children: VNode['children']): VNode {
+export function h(type: VNode['type'], props: VNode['props'], ...children: VNode['children']) {
   const result: VNode = {
     type,
     props: props || {},
@@ -12,7 +12,7 @@ export function h(type: string | Function, props: Props, ...children: VNode['chi
   return result;
 }
 
-export function Fragment(props: { children: VNode['children'] }): VNode {
+export function Fragment(props: { children: VNode['children'] }) {
   const result: VNode = {
     type: 'FRAGMENT',
     props: props || {},

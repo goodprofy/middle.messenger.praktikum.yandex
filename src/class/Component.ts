@@ -7,10 +7,11 @@ export abstract class Component<P = Props, S = Props> {
   state: S;
   prevState: S;
   vnode: VNode | null = null;
-  element: HTMLElement = null;
-  parentNode: HTMLElement = null;
+  element: HTMLElement | null = null;
+  parentNode: ParentNode | null = null;
   updateScheduled: boolean = false;
   isMounted: boolean = false;
+  component: Component | undefined;
 
   constructor(props: P = {} as P) {
     console.log('component constructor');

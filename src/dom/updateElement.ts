@@ -50,7 +50,7 @@ export function updateElement(
 
   if (newNode.type !== oldNode.type) {
     console.info('newNode.type !== oldNode.type');
-    const newElement = createElement(newNode) as HTMLElement;
+    const newElement = createElement(newNode);
     parentElement.replaceChild(newElement, element);
     if (isDefined(vnode)) {
       vnode.element = newElement;

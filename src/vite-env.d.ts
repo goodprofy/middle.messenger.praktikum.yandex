@@ -4,16 +4,6 @@
 
 import type { Props, VNode } from './types';
 
-declare global {
-  interface HTMLElement {
-    _vnode?: VNode;
-  }
-
-  interface SVGSVGElement {
-    _vnode?: VNode;
-  }
-}
-
 declare namespace JSX {
   interface Element extends VNode {}
 
@@ -40,5 +30,5 @@ declare type ComponentProps<T extends keyof JSX.IntrinsicElements | FC<any>> =
       ? JSX.IntrinsicElements[T]
       : Record<string, unknown>;
 
-declare type FC<P = Props> = (props: P) => VNode | null;
-declare type PropsWithChildren<P = Props> = P & { children?: VNode[] };
+declare type FC<P = Props> = (props: P) => VNode;
+declare type PropsWithChildren<P = Props> = P & { children?: VNode['children'] };

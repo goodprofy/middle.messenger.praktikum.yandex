@@ -1,35 +1,49 @@
 import { Component } from '../class';
-import type { VNode } from '../types';
+import type { ClassComponent, VNode } from '../types';
+import { updateChildren } from './updateChildren';
 import { updateProps } from './updateProps';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-export function createElement(vnode: VNode): HTMLElement | SVGElement | DocumentFragment | Text {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isClassComponent(type: any): type is ClassComponent {
+  return type.prototype instanceof Component;
+}
+
+export function createElement(vnode: VNode): Exclude<VNode['element'], undefined> {
   console.group('createElement');
 
   if (vnode === null) {
     console.info('isNull');
     const element = document.createTextNode('');
-    element._vnode = { element };
     console.groupEnd();
     return element;
-  }
-
-  const isText = typeof vnode === 'string' || typeof vnode === 'number' || typeof vnode === 'boolean';
-  if (isText) {
+  } else if (['string', 'number', 'boolean'].includes(typeof vnode)) {
     console.info('isText');
     const element = document.createTextNode(String(vnode));
-    element._vnode = { element };
     console.groupEnd();
     return element;
-  }
+  } else if (vnode.type === 'FRAGMENT') {
+    console.info('isFragment');
+    const fragment = document.createDocumentFragment();
+    updateChildren(fragment, vnode.children);
+    console.groupEnd();
+    return fragment;
+  } else if (typeof vnode.type === 'string') {
+    const element =
+      vnode.type === 'svg' ? document.createElementNS(SVG_NS, vnode.type) : document.createElement(vnode.type);
 
-  if (typeof vnode.type === 'function') {
-    if (vnode.type.prototype instanceof Component) {
+    updateProps(element, vnode.props);
+    updateChildren(element, vnode.children);
+
+    console.groupEnd();
+    return element;
+  } else if (typeof vnode.type === 'function') {
+    if (isClassComponent(vnode.type)) {
       console.info('isComponent');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const props = { ...vnode.props, children: vnode.children };
-      const component = new (vnode.type as Function)(props);
+      const component = new vnode.type(props);
       vnode.component = component;
       const renderedNode = component.render();
       vnode.renderedNode = renderedNode;
@@ -40,48 +54,20 @@ export function createElement(vnode: VNode): HTMLElement | SVGElement | Document
 
       setTimeout(() => {
         component.componentDidMount();
-        component.parentNode = element.parentNode;
+        if (element?.parentNode) {
+          component.parentNode = element.parentNode;
+        }
       }, 0);
-
-      element._vnode = vnode;
 
       return element;
     } else {
       console.info('isFunction');
       const props = { ...vnode.props, children: vnode.children };
       const renderedNode = vnode.type(props);
-      vnode.renderedNode = renderedNode;
       const element = createElement(renderedNode);
-      element._vnode = vnode;
       return element;
     }
+  } else {
+    throw new Error('vnode unsupported');
   }
-
-  if (vnode.type === 'FRAGMENT') {
-    const element = document.createDocumentFragment();
-    vnode.children.forEach((child) => {
-      const newChild = createElement(child);
-      element.appendChild(newChild);
-    });
-
-    element._vnode = { ...vnode, element };
-
-    console.groupEnd();
-    return element;
-  }
-
-  const element =
-    vnode.type === 'svg' ? document.createElementNS(SVG_NS, vnode.type) : document.createElement(vnode.type);
-
-  updateProps(element, vnode.props);
-
-  vnode.children?.forEach((child) => {
-    const newChild = createElement(child);
-    element.appendChild(newChild);
-  });
-
-  element._vnode = { ...vnode, element };
-
-  console.groupEnd();
-  return element;
 }

@@ -15,67 +15,31 @@ import {
 import { Navigator } from './Navigator';
 import './styles.scss';
 
-const router = new Router();
-
-router
-  .use('/', () => (
-    <LayoutPublic>
-      <SignIn />
-    </LayoutPublic>
-  ))
-  .use('/sign-in', () => (
-    <LayoutPublic>
-      <SignIn />
-    </LayoutPublic>
-  ))
-  .use('/sign-up', () => (
-    <LayoutPublic>
-      <SignUp />
-    </LayoutPublic>
-  ))
-  .use('/messenger', () => (
-    <LayoutChat>
-      <Messenger />
-    </LayoutChat>
-  ))
-  .use('/messenger/:id', () => (
-    <LayoutChat>
-      <Chat />
-    </LayoutChat>
-  ))
-  .use('/settings', () => (
-    <LayoutUser>
-      <Profile />
-    </LayoutUser>
-  ))
-  .use('/settings/edit', () => (
-    <LayoutUser>
-      <ProfileEdit />
-    </LayoutUser>
-  ))
-  .use('/settings/avatar', () => (
-    <LayoutUser>
-      <Profile />
-      <AvatarEdit />
-    </LayoutUser>
-  ))
-  .use('/settings/password', () => (
-    <LayoutUser>
-      <ProfilePasswordEdit />
-    </LayoutUser>
-  ))
-  .use('/400', () => (
-    <LayoutPublic>
-      <NotFound />
-    </LayoutPublic>
-  ))
-  .use('/500', () => (
-    <LayoutPublic>
-      <ServerError />
-    </LayoutPublic>
-  ))
-  .start();
+const signIn = () => (
+  <LayoutPublic>
+    <SignIn />
+  </LayoutPublic>
+);
+const signUp = () => (
+  <LayoutPublic>
+    <SignUp />
+  </LayoutPublic>
+);
 
 export const App = () => {
-  return <Navigator router={router} />;
+  const routes = [
+    { path: '/', component: signIn },
+    { path: '/sign-in', component: signIn },
+    { path: '/sign-up', component: signUp }
+  ];
+  return (
+    <Navigator
+      routes={routes}
+      NotFound={
+        <LayoutPublic>
+          <NotFound />
+        </LayoutPublic>
+      }
+    />
+  );
 };

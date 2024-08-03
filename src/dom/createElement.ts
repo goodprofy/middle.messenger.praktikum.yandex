@@ -10,7 +10,7 @@ function isClassComponent(type: any): type is ClassComponent {
   return type.prototype instanceof Component;
 }
 
-export function createElement(vnode: VNode): Exclude<VNode['element'], undefined> {
+export function createElement(vnode: VNode | string | number | boolean | null): Exclude<VNode['element'], undefined> {
   console.group('createElement');
 
   if (vnode === null) {
@@ -18,7 +18,7 @@ export function createElement(vnode: VNode): Exclude<VNode['element'], undefined
     const element = document.createTextNode('');
     console.groupEnd();
     return element;
-  } else if (['string', 'number', 'boolean'].includes(typeof vnode)) {
+  } else if (typeof vnode === 'string' || typeof vnode === 'number' || typeof vnode === 'boolean') {
     console.info('isText');
     const element = document.createTextNode(String(vnode));
     console.groupEnd();

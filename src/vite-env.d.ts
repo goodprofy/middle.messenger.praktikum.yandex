@@ -2,12 +2,12 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import type { Props, VNode } from './types';
-
 declare namespace JSX {
   interface Element extends VNode {}
 
-  interface IntrinsicElements extends IntrinsicElementMap {}
+  interface IntrinsicElements extends IntrinsicElementMap {
+    svg: any;
+  }
 
   type IntrinsicElementMap = {
     [K in keyof HTMLElementTagNameMap]: {
@@ -30,5 +30,6 @@ declare type ComponentProps<T extends keyof JSX.IntrinsicElements | FC<any>> =
       ? JSX.IntrinsicElements[T]
       : Record<string, unknown>;
 
+type Props = Record<string, unknown>;
 declare type FC<P = Props> = (props: P) => VNode;
 declare type PropsWithChildren<P = Props> = P & { children?: VNode['children'] };

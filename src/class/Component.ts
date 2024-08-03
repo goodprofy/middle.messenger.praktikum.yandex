@@ -86,5 +86,5 @@ export abstract class Component<P = Props, S = Props> {
     console.groupEnd();
   }
 
-  abstract render(): VNode;
+  abstract render(): JSX.Element;
 }

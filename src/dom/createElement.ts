@@ -1,5 +1,4 @@
 import type { ClassComponent, DOMElement, VNode } from '../types';
-import { getChildIndex } from './getChildIndex';
 import { updateChildren } from './updateChildren';
 import { updateProps } from './updateProps';
 
@@ -44,7 +43,6 @@ export function createElement(vnode: VNode | string | number | boolean | null): 
     console.groupEnd();
     return element;
   } else if (typeof vnode.type === 'function') {
-    console.log('prototype', vnode.type.prototype);
     if (isClassComponent(vnode.type)) {
       console.info('isComponent');
 
@@ -53,13 +51,11 @@ export function createElement(vnode: VNode | string | number | boolean | null): 
       vnode.component = component;
       const renderedNode = component.render();
       const element = createElement(renderedNode) as HTMLElement;
-      console.log(element.outerHTML);
       component.element = element;
       component.vnode = renderedNode;
 
       setTimeout(() => {
         if (element instanceof DocumentFragment) {
-          console.log('DocumentFragment');
           component.parentNode = element.childNodes[0]?.parentNode;
         } else {
           component.parentNode = element.parentNode;

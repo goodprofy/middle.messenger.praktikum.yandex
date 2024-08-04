@@ -1,7 +1,7 @@
 import { Component } from './class';
 
 export type Props = Record<string, unknown>;
-export type DOMElement = HTMLElement | SVGSVGElement | DocumentFragment | Text;
+export type DOMElement = HTMLElement | SVGSVGElement | Text;
 export type FunctionalComponent = FC<PropsWithChildren>;
 export interface ClassComponent {
   new (props: PropsWithChildren): Component;

@@ -69,17 +69,10 @@ export abstract class Component<P = Props, S = Props> {
   update() {
     console.group('component update');
 
-    console.log(this.parentNode?.innerHTML);
-
     if (this.isMounted && isDefined(this.parentNode) && isDefined(this.vnode) && this.element) {
       const nextVNode = this.render();
 
-      this.element = updateElement(
-        this.parentNode,
-        nextVNode,
-        this.vnode,
-        getChildIndex(this.parentNode.childNodes, this.element)
-      );
+      this.element = updateElement(this.parentNode, this.element, nextVNode, this.vnode);
 
       this.vnode = { ...this.vnode, ...nextVNode };
 

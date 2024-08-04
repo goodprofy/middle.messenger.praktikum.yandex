@@ -1,15 +1,7 @@
 import type { VNode } from '../types';
 import { isDefined } from '../utils';
 
-export function updateProps(
-  element: Exclude<VNode['element'], undefined>,
-  newProps: VNode['props'] = {},
-  oldProps: VNode['props'] = {}
-) {
-  if (!(element instanceof HTMLElement)) {
-    return;
-  }
-
+export function updateProps(element: HTMLElement, newProps: VNode['props'] = {}, oldProps: VNode['props'] = {}) {
   const allProps = { ...oldProps, ...newProps };
 
   Object.keys(allProps).forEach((name) => {

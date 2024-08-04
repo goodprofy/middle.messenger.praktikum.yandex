@@ -104,17 +104,30 @@ export function updateElement(
     let newElement: HTMLElement;
     if (isClassComponent(newNode.type)) {
       console.info('isComponent');
-      console.groupEnd();
-      return element;
+      const props = { ...newNode.props, children: newNode.children };
+
+      const component = new newNode.type(props);
+      newNode.component = component;
+      renderedNode = component.render();
+      const element = createElement(renderedNode) as HTMLElement;
+      component.element = element;
+      component.vnode = renderedNode;
     } else {
       console.log('isFunction');
-      console.log({ newNode, oldNode });
       const props = { ...newNode.props, children: newNode.children };
       renderedNode = newNode.type(props);
     }
 
     if (typeof oldNode.type === 'function') {
-      newElement = updateElement(container, element, renderedNode);
+      if (isClassComponent(oldNode.type)) {
+        console.log('isOldComponent');
+        const oldRenderedNode = oldNode.component.vnode;
+        newElement = updateElement(container, element, renderedNode, oldRenderedNode);
+      } else {
+        console.log('isOldFunction');
+        const oldRenderedNode = oldNode.type({ ...oldNode.props, children: oldNode.children });
+        newElement = updateElement(container, element, renderedNode, oldRenderedNode);
+      }
     } else {
       newElement = createElement(renderedNode);
       container.replaceChild(newElement, element);

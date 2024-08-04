@@ -47,7 +47,8 @@ export abstract class Component<P = Props, S = Props> {
   }
 
   shouldUpdate(nextProps: P, nextState: S): boolean {
-    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+    return true;
+    //return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
   mounted() {

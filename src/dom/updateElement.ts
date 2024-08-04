@@ -1,105 +1,163 @@
-import { Component } from '../class';
-import { VNode } from '../types';
-import { isDefined } from '../utils';
+import type { ClassComponent, DOMElement, VNode } from '../types';
+import { isDefined, isNull, isObject } from '../utils';
 import { createElement } from './createElement';
 import { updateProps } from './updateProps';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isClassComponent(type: any): type is ClassComponent {
+  return typeof type.prototype?.render === 'function';
+}
+
 export function updateElement(
-  parentElement: HTMLElement,
-  newNode: VNode | undefined,
-  oldNode: VNode | undefined,
-  index: number = 0,
-  vnode: VNode = undefined
-): void {
+  parentNode: HTMLElement,
+  newNode: VNode | VNode['type'],
+  oldNode: VNode | VNode['type'],
+  index: number = 0
+): DOMElement | null {
   console.group('updateElement');
   console.log('Updating element at index:', index);
   console.log('New node:', newNode);
   console.log('Old node:', oldNode);
 
-  if (!isDefined(newNode) && oldNode) {
-    parentElement.removeChild(parentElement.childNodes[index]);
+  if (Object.is(newNode, oldNode)) {
+    console.log('====');
     console.groupEnd();
-    return;
+    return null;
   }
 
-  if (newNode && !isDefined(oldNode)) {
-    parentElement.appendChild(createElement(newNode));
+  if (isNull(newNode) && !isNull(oldNode)) {
+    console.log('isNull newNode');
+    const element = parentNode.childNodes[index];
+    if (isObject(oldNode)) {
+      removeChildren(oldNode.children);
+    }
+    element?.remove();
     console.groupEnd();
-    return;
+    return null;
   }
 
-  if (!isDefined(newNode) || !isDefined(oldNode)) {
-    console.info('!newNode || !oldNode');
+  if (!isNull(newNode) && isNull(oldNode)) {
+    console.log('isNull oldNode');
+    const element = createElement(newNode);
+    parentNode.append(element);
     console.groupEnd();
-    return;
+    return element;
   }
 
-  if (!parentElement || !parentElement.childNodes) {
+  if (isNull(newNode) || isNull(oldNode)) {
+    console.log('isNull newNode || oldNode');
+    console.groupEnd();
+    return null;
+  }
+
+  if (!isDefined(parentNode) || !isDefined(parentNode.childNodes)) {
     console.warn('Parent element or its childNodes are undefined');
     console.groupEnd();
-    return;
+    return null;
   }
 
-  if (index >= parentElement.childNodes.length) {
+  if (index >= parentNode.childNodes.length) {
     console.warn('Index is out of bounds for childNodes');
     console.groupEnd();
-    return;
+    return null;
   }
 
-  const element = parentElement.childNodes[index] as HTMLElement | Text;
+  const element = parentNode.childNodes[index] as HTMLElement | Text;
 
-  if (newNode.type !== oldNode.type) {
-    console.info('newNode.type !== oldNode.type');
-    const newElement = createElement(newNode);
-    parentElement.replaceChild(newElement, element);
-    if (isDefined(vnode)) {
-      vnode.element = newElement;
+  if (typeof newNode === 'boolean') {
+    console.log('isBoolean');
+
+    if (isObject(oldNode)) {
+      removeChildren(oldNode.children);
     }
+
+    element.remove();
     console.groupEnd();
-    return;
+    return null;
   }
 
-  const isText = typeof newNode === 'string' || typeof newNode === 'number' || typeof newNode === 'boolean';
-  if (isText) {
-    if (newNode !== oldNode) {
-      element.nodeValue = newNode;
+  if (typeof newNode === 'string' || typeof newNode === 'number') {
+    console.log('isText');
+    /* if (typeof oldNode === 'string' || typeof oldNode === 'number') {
+    } else {
+    } */
+
+    if (isObject(oldNode)) {
+      removeChildren(oldNode.children);
     }
-    return;
+
+    const newElement = createElement(newNode);
+    parentNode.replaceChild(newElement, element);
+    console.groupEnd();
+    return newElement;
+  }
+
+  if (isObject(oldNode) && newNode.type !== oldNode.type) {
+    console.info('newNode.type !== oldNode.type');
+    removeChildren(oldNode.children);
+    if (isClassComponent(oldNode.type)) {
+      if (isDefined(oldNode.component)) {
+        oldNode.component.isMounted = false;
+        oldNode.component.element?.remove();
+        oldNode.component.unmounted();
+      }
+    }
+
+    const newElement = createElement(newNode);
+    parentNode.replaceChild(newElement, element);
+    console.groupEnd();
+    return newElement;
   }
 
   if (typeof newNode.type === 'function') {
-    let renderedNode: VNode;
-    if (newNode.type.prototype instanceof Component) {
+    if (isClassComponent(newNode.type)) {
       console.info('isComponent');
-      const component = (oldNode?.component as Component) || new (newNode.type as any)(newNode.props);
-      component.props = newNode.props;
-      renderedNode = component.render();
-      newNode.component = component;
     } else {
-      console.info('isFunction');
-      renderedNode = (newNode.type as Function)(newNode.props);
-    }
-    updateElement(element, renderedNode, oldNode?.renderedNode, 0);
-    newNode.renderedNode = renderedNode;
-  } else {
-    console.info('isVNode');
-    updateProps(element, newNode.props, oldNode.props);
-
-    const newChildren = newNode.children;
-    const oldChildren = oldNode.children;
-    const maxLength = Math.max(newChildren.length, oldChildren.length);
-
-    for (let i = 0; i < maxLength; i++) {
-      updateElement(element, newChildren[i], oldChildren[i], i);
-    }
-
-    if (element && element.childNodes) {
-      while (element.childNodes?.length > newChildren.length) {
-        console.info('removeChild', element.lastChild?.textContent);
-        element.removeChild(element.lastChild!);
+      console.log('isFunction');
+      console.log(JSON.stringify(newNode, null, 2));
+      const props = { ...newNode.props, children: newNode.children };
+      const renderedNode = newNode.type(props);
+      const newElement = createElement(renderedNode);
+      if (isObject(oldNode)) {
+        removeChildren(oldNode.children);
       }
+      parentNode.replaceChild(newElement, element);
+      return newElement;
     }
   }
 
+  console.info('isVNode');
+
+  updateProps(element, newNode.props, oldNode.props);
+
+  const newChildren = newNode.children;
+  const oldChildren = oldNode.children;
+  const maxLength = Math.max(newChildren.length, oldChildren.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    updateElement(element, newChildren[i], oldChildren[i], i);
+  }
+
   console.groupEnd();
+
+  return element;
+}
+
+function removeChildren(children: VNode['children']) {
+  children?.forEach((child) => {
+    if (isObject(child)) {
+      if (isDefined(child.component)) {
+        child.component.unmount();
+
+        setTimeout(() => {
+          if (isDefined(child.component)) {
+            child.component.isMounted = false;
+            child.component.element?.remove();
+            child.component.unmounted();
+          }
+        }, 0);
+      }
+      removeChildren(child.children);
+    }
+  });
 }

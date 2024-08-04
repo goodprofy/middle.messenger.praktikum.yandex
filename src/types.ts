@@ -7,12 +7,11 @@ export interface ClassComponent {
   new (props: PropsWithChildren): Component;
   prototype: Component;
 }
+type VNodeType = FunctionalComponent | ClassComponent | string | number | boolean | null | 'FRAGMENT';
 
 export interface VNode {
-  type: FunctionalComponent | ClassComponent | string | number | boolean | null | 'FRAGMENT';
+  type: VNodeType;
   props: Props;
   children: VNode[];
-  element?: DOMElement;
   component?: Component;
-  renderedNode?: VNode;
 }

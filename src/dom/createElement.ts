@@ -1,5 +1,5 @@
-import { Component } from '../class';
-import type { ClassComponent, VNode } from '../types';
+import type { ClassComponent, DOMElement, VNode } from '../types';
+import { getChildIndex } from './getChildIndex';
 import { updateChildren } from './updateChildren';
 import { updateProps } from './updateProps';
 
@@ -7,10 +7,10 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isClassComponent(type: any): type is ClassComponent {
-  return type.prototype instanceof Component;
+  return typeof type.prototype?.render === 'function';
 }
 
-export function createElement(vnode: VNode | string | number | boolean | null): Exclude<VNode['element'], undefined> {
+export function createElement(vnode: VNode | string | number | boolean | null): DOMElement {
   console.group('createElement');
 
   if (vnode === null) {
@@ -18,7 +18,12 @@ export function createElement(vnode: VNode | string | number | boolean | null): 
     const element = document.createTextNode('');
     console.groupEnd();
     return element;
-  } else if (typeof vnode === 'string' || typeof vnode === 'number' || typeof vnode === 'boolean') {
+  } else if (typeof vnode === 'boolean') {
+    console.info('isBoolean');
+    const element = document.createTextNode('');
+    console.groupEnd();
+    return element;
+  } else if (typeof vnode === 'string' || typeof vnode === 'number') {
     console.info('isText');
     const element = document.createTextNode(String(vnode));
     console.groupEnd();
@@ -39,6 +44,7 @@ export function createElement(vnode: VNode | string | number | boolean | null): 
     console.groupEnd();
     return element;
   } else if (typeof vnode.type === 'function') {
+    console.log('prototype', vnode.type.prototype);
     if (isClassComponent(vnode.type)) {
       console.info('isComponent');
 
@@ -46,16 +52,22 @@ export function createElement(vnode: VNode | string | number | boolean | null): 
       const component = new vnode.type(props);
       vnode.component = component;
       const renderedNode = component.render();
-      vnode.renderedNode = renderedNode;
-      const element = createElement(renderedNode);
-      vnode.element = element;
-      component.vnode = vnode;
-      component.isMounted = true;
+      const element = createElement(renderedNode) as HTMLElement;
+      console.log(element.outerHTML);
+      component.element = element;
+      component.vnode = renderedNode;
 
       setTimeout(() => {
-        component.componentDidMount();
-        if (element?.parentNode) {
+        if (element instanceof DocumentFragment) {
+          console.log('DocumentFragment');
+          component.parentNode = element.childNodes[0]?.parentNode;
+        } else {
           component.parentNode = element.parentNode;
+        }
+        if (component.parentNode) {
+          component.indexInParent = 0;
+          component.isMounted = true;
+          component.mounted();
         }
       }, 0);
 

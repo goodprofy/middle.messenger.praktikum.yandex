@@ -1,17 +1,17 @@
-import { updateElement } from '../dom';
-import type { Props, VNode } from '../types';
-import { deepEqual } from '../utils';
+import { getChildIndex, updateElement } from '../dom';
+import type { DOMElement, Props, VNode } from '../types';
+import { deepEqual, isDefined } from '../utils';
 
 export abstract class Component<P = Props, S = Props> {
   props: P;
   state: S;
   prevState: S;
   vnode: VNode | null = null;
-  element: HTMLElement | null = null;
-  parentNode: ParentNode | null = null;
-  updateScheduled: boolean = false;
-  isMounted: boolean = false;
-  component: Component | undefined;
+  element: DOMElement | null = null;
+  parentNode: HTMLElement | null = null;
+  indexInParent = 0;
+  isMounted = false;
+  updateScheduled = false;
 
   constructor(props: P = {} as P) {
     console.log('component constructor');
@@ -50,41 +50,43 @@ export abstract class Component<P = Props, S = Props> {
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
-  componentDidMount() {
-    console.info('componentDidMount');
+  mounted() {
+    console.info('component mounted');
   }
 
   updated() {
     console.info('component updated');
   }
 
-  componentWillUnmount() {
-    console.info('componentWillUnmount');
-    this.isMounted = false;
+  unmount() {
+    console.info('component unmount');
+  }
+
+  unmounted() {
+    console.info('component unmounted');
   }
 
   update() {
     console.group('component update');
-    if (this.isMounted && this.vnode && this.vnode.element) {
+
+    console.log(this.parentNode?.innerHTML);
+
+    if (this.isMounted && isDefined(this.parentNode) && isDefined(this.vnode) && this.element) {
       const nextVNode = this.render();
 
-      updateElement(
-        this.vnode.element.parentElement!,
+      this.element = updateElement(
+        this.parentNode,
         nextVNode,
-        this.vnode.renderedNode,
-        Array.from(this.vnode.element.parentElement!.childNodes).indexOf(this.vnode.element),
-        this.vnode
+        this.vnode,
+        getChildIndex(this.parentNode.childNodes, this.element)
       );
-      this.vnode = { ...this.vnode, renderedNode: nextVNode };
 
-      if (this.vnode.element.parentElement == null) {
-        throw new Error('Parent element lost');
-      }
+      this.vnode = { ...this.vnode, ...nextVNode };
 
       this.updated();
     }
     console.groupEnd();
   }
 
-  abstract render(): JSX.Element;
+  abstract render(): VNode['type'];
 }

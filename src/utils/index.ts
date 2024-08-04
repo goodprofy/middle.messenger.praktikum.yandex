@@ -3,6 +3,8 @@ export * from './clsx';
 export * from './deepEqual';
 export * from './getInputErrorMessage';
 export * from './isDefined';
+export * from './isNull';
+export * from './isObject';
 export * from './logError';
 export * from './noop';
 export * from './queryStringify';

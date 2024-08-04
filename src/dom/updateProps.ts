@@ -1,5 +1,5 @@
 import type { VNode } from '../types';
-import { isDefined } from '../utils';
+import { isDefined, isObject } from '../utils';
 
 export function updateProps(element: HTMLElement, newProps: VNode['props'] = {}, oldProps: VNode['props'] = {}) {
   const allProps = { ...oldProps, ...newProps };
@@ -12,8 +12,8 @@ export function updateProps(element: HTMLElement, newProps: VNode['props'] = {},
     const newValue = newProps[name];
     const oldValue = oldProps[name];
     const isFunction = typeof newValue === 'function';
-    const isObject = typeof newValue === 'object' && newValue !== null;
     const isString = typeof newValue === 'string';
+    const isBoolean = typeof newValue === 'boolean';
 
     if (name === 'ref' && isFunction) {
       newValue(element);
@@ -25,7 +25,7 @@ export function updateProps(element: HTMLElement, newProps: VNode['props'] = {},
         element.addEventListener(eventName, newValue as EventListener);
       }
     } else if (name === 'style') {
-      if (isObject) {
+      if (isObject(newValue)) {
         const styles = Object.entries(newValue);
         styles.forEach(([prop, value]) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +53,9 @@ export function updateProps(element: HTMLElement, newProps: VNode['props'] = {},
         }
       } else if (isString) {
         element.setAttribute(name, newValue);
+      }
+      if (isBoolean && newValue === true) {
+        element.setAttribute(name, '');
       } else {
         element.removeAttribute(name);
       }
